@@ -1,3 +1,5 @@
+// version 2 is lost
+
 #include <GL/glut.h>
 #include <time.h>
 #include <stdlib.h>
