@@ -17,25 +17,20 @@
  */
 
 #pragma once
-#include <GL/glut.h>
-#include <list>
-using namespace std;
-#include ".\invaderset.h"
-#include ".\consts.h"
-#include ".\player.h"
-#include ".\baseset.h"
 
-class CBomber
+#include ".\base.h"
+
+class CBaseSet
 {
 protected:
-	list<Point> shots;
+	CBase base[5];
 public:
-	CBomber(void);
-	~CBomber(void);
-	static CBomber* getInstance();
+	CBaseSet(void);
+	~CBaseSet(void);
+	static CBaseSet* getInstance();
 
-	void shoot(Point p);
-	void progress();
-	void killAll();
-	void draw();
+	void makeBases();
+	bool checkHits(Point p);
+
+	void drawBases();
 };

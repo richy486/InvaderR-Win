@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-invaderR v0.03
+invaderR v0.04
 A simple space invader clone written in OpenGL and Glut
 If there is anything you want to say or ask please send me a message to richy486@gmail.com
 Use left and right to move, z to shoot, press enter when a face apears to continue.

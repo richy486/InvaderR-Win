@@ -38,33 +38,41 @@ void CBomber::shoot(Point p)
 	t_p.y = p.y;
 	shots.push_back(t_p);
 }
-// Move a bomb down the screen.
+// Move a bomb down the screen, if it is in range check if a bomb will hit a base or the player.
 void CBomber::progress()
 {
+	Point t_p;
 	list<Point>::iterator iter;
 
-	iter=shots.begin(); 
-	while(iter!=shots.end())
+	
+	for(int i = 0; i < 5; i++)
 	{
-		Point t_p;
-		t_p.x = iter->x;
-		t_p.y = iter->y;
-		if(iter->y <= 0)
+		iter=shots.begin(); 
+		while(iter!=shots.end())
 		{
-			iter = shots.erase(iter);
+			
+			t_p.x = iter->x;
+			t_p.y = iter->y;
+			if(iter->y <=50+(5*IPS))
+			{
+				if(iter->y <= 0 || CBaseSet::getInstance()->checkHits(t_p))
+				{
+					iter = shots.erase(iter);
+				}
+			}
+			if(iter->y <=50+(5*IPS) && CPlayer::getInstance()->testHit(t_p))
+			{
+				iter = shots.erase(iter);
+				CInvaderSet::getInstance()->setPlaying(false);
+				CInvaderSet::getInstance()->setOutcome(false);
+			}
+			else
+			{
+				iter->y -=1;
+				iter++; 
+			}
+			
 		}
-		if(CPlayer::getInstance()->testHit(t_p))
-		{
-			iter = shots.erase(iter);
-			CInvaderSet::getInstance()->setPlaying(false);
-			CInvaderSet::getInstance()->setOutcome(false);
-		}
-		else
-		{
-			iter->y -=5;
-			iter++; 
-		}
-		
 	}
 }
 // Kill all the bombs.
