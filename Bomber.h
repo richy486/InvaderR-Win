@@ -17,25 +17,24 @@
  */
 
 #pragma once
-
 #include <GL/glut.h>
-#include "consts.h"
+#include <list>
+using namespace std;
+#include ".\invaderset.h"
+#include ".\consts.h"
+#include ".\player.h"
 
-class CPlayer
+class CBomber
 {
 protected:
-	Point p_pos;
-	bool img[15];
+	list<Point> shots;
 public:
-	CPlayer(void);
-	~CPlayer(void);
-	static CPlayer* getInstance();
+	CBomber(void);
+	~CBomber(void);
+	static CBomber* getInstance();
 
-	void setPos(Point p){p_pos = p;}
-	Point getPos(){return p_pos;}
-
-	void start();
-	bool testHit(Point p);
+	void shoot(Point p);
+	void progress();
+	void killAll();
 	void draw();
-
 };

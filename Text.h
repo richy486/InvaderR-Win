@@ -21,21 +21,18 @@
 #include <GL/glut.h>
 #include "consts.h"
 
-class CPlayer
+class CText
 {
 protected:
-	Point p_pos;
 	bool img[15];
+	int x,y;
 public:
-	CPlayer(void);
-	~CPlayer(void);
-	static CPlayer* getInstance();
+	CText(void);
+	~CText(void);
+	static CText* getInstance();
 
-	void setPos(Point p){p_pos = p;}
-	Point getPos(){return p_pos;}
-
-	void start();
-	bool testHit(Point p);
+	void displayNothing();
+	void displayWin();
+	void displayLoose();
 	void draw();
-
 };
