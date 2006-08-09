@@ -121,7 +121,7 @@ void CInvaderSet::move()
 			outcome = false;
 		}
 
-		if(rand()%(I_set.size()*10) == 1)
+		if(rand()%(I_set.size()*20) == 1)
 		{
 			CBomber::getInstance()->shoot(t_p);
 		}

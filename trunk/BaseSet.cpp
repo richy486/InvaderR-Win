@@ -16,26 +16,47 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#pragma once
-#include <GL/glut.h>
-#include <list>
-using namespace std;
-#include ".\invaderset.h"
-#include ".\consts.h"
-#include ".\player.h"
 #include ".\baseset.h"
 
-class CBomber
+CBaseSet::CBaseSet(void)
 {
-protected:
-	list<Point> shots;
-public:
-	CBomber(void);
-	~CBomber(void);
-	static CBomber* getInstance();
 
-	void shoot(Point p);
-	void progress();
-	void killAll();
-	void draw();
-};
+}
+CBaseSet::~CBaseSet(void)
+{
+}
+CBaseSet* CBaseSet::getInstance()
+{
+	static CBaseSet instance;
+    return &instance;
+}
+// Generate and place 5 bases.
+void CBaseSet::makeBases()
+{
+	Point t_p;
+	for(int i = 0; i < 5; i++)
+	{
+		base[i].generate();
+		t_p.x = i*100+30;
+		t_p.y = 50;
+		base[i].setPos(t_p);
+	}
+}
+// Check hits for all the bases.
+bool CBaseSet::checkHits(Point p)
+{
+	for(int i = 0; i < 5; i++)
+	{
+		if(base[i].testHit(p))
+			return true;
+	}
+	return false;
+}
+// Draw all the bases.
+void CBaseSet::drawBases()
+{
+	for(int i = 0; i < 5; i++)
+	{
+		base[i].drawBase();
+	}
+}

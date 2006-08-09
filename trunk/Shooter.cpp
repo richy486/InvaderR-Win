@@ -38,20 +38,24 @@ void CShooter::progress()
 {
 	list<Point>::iterator iter;
 
-	iter=shots.begin(); 
-	while(iter!=shots.end())
+	for(int i = 0; i < 5; i++)
 	{
-		Point t_p;
-		t_p.x = iter->x;
-		t_p.y = iter->y;
-		if(iter->y >= 320 || CInvaderSet::getInstance()->testHits(t_p) )
+		iter=shots.begin(); 
+		while(iter!=shots.end())
 		{
-			iter = shots.erase(iter);
-		}
-		else
-		{
-			iter->y +=5;
-			iter++; 
+			Point t_p;
+			t_p.x = iter->x;
+			t_p.y = iter->y;
+			
+			if(iter->y >= 320 || CInvaderSet::getInstance()->testHits(t_p) || CBaseSet::getInstance()->checkHits(t_p))
+			{
+				iter = shots.erase(iter);
+			}
+			else
+			{
+				iter->y +=1;
+				iter++; 
+			}
 		}
 		
 	}

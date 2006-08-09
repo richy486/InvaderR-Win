@@ -25,11 +25,13 @@
 #include ".\shooter.h"
 #include ".\text.h"
 #include ".\bomber.h"
+#include ".\baseset.h"
 
 int KeyDown[256];
 int SpecDown[256];
 
 CShooter shooter;
+
 
 void init(void)
 {
@@ -40,39 +42,35 @@ void init(void)
 	
 	srand( time(NULL));
 	
-	Point t_p;
-	t_p.x = 10;
-	t_p.y = 10;
-
+	
+	CBaseSet::getInstance()->makeBases();
 	CInvaderSet::getInstance()->setPlaying(true);
 	CInvaderSet::getInstance()->restart();
 	
 	CPlayer::getInstance()->start();
+	
 }
 void checkKeyboard(void)
 {
 	if ( SpecDown[GLUT_KEY_LEFT] && CInvaderSet::getInstance()->getPlaying())
 	{
 		Point t_p = CPlayer::getInstance()->getPos();
-		t_p.x -= 5;
+		t_p.x -= 3.5;
 		if(t_p.x > 20)
 			CPlayer::getInstance()->setPos(t_p);
 	}
 	if ( SpecDown[GLUT_KEY_RIGHT] && CInvaderSet::getInstance()->getPlaying())
 	{
 		Point t_p = CPlayer::getInstance()->getPos();
-		t_p.x += 5;
+		t_p.x += 3.5;
 		if(t_p.x < 450)
 			CPlayer::getInstance()->setPos(t_p);
 	}
-	if ( SpecDown[GLUT_KEY_F1] && CInvaderSet::getInstance()->getPlaying())
-	{
-		shooter.shoot(CPlayer::getInstance()->getPos());
-	}//*/
 }
 static void timerCallback (int value) 
 { 
 	/* Do timer processing */
+    checkKeyboard();    
 	if(CInvaderSet::getInstance()->getPlaying())
 	{
 		CText::getInstance()->displayNothing();
@@ -88,7 +86,7 @@ static void timerCallback (int value)
 			CText::getInstance()->displayLoose();
 	}
 	
-	checkKeyboard();
+	
 	/* maybe glutPostRedisplay(), if necessary */ 
 	glutPostRedisplay();
 	/* call back again after elapsedUSecs have passed */ 
@@ -99,14 +97,13 @@ void OnDraw(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	
-	
 	if(CInvaderSet::getInstance()->getPlaying())
 	{
 		CInvaderSet::getInstance()->drawSet();
 		CPlayer::getInstance()->draw();
 		shooter.draw();
 		CBomber::getInstance()->draw();
+		CBaseSet::getInstance()->drawBases();
 	}
 	else
 	{
@@ -129,16 +126,13 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 	case 27:        // When Escape Is Pressed...
 		exit ( 0 );   // Exit The Program
 		break;        // Ready For Next Case
-	case 90:
-	case 90+32:
-		shooter.shoot(CPlayer::getInstance()->getPos());
-		break;
 	case 13:
 		if(!CInvaderSet::getInstance()->getPlaying())
 		{
 			CInvaderSet::getInstance()->setPlaying(true);
 			CPlayer::getInstance()->start();
 			CInvaderSet::getInstance()->restart();
+			CBaseSet::getInstance()->makeBases();
 		}
 	default:        // Now Wrap It Up
 		break;
@@ -147,6 +141,12 @@ void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 }
 void keyboardUp(unsigned char key, int x, int y)
 {
+	if(key == 90 || key == 90+32)
+	{
+		Point t_p = CPlayer::getInstance()->getPos();
+		t_p.x-=1.5;
+		shooter.shoot(t_p);
+	}
     KeyDown[key] = 0;
 }
 void specFunc(int key, int x, int y)

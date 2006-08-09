@@ -53,7 +53,7 @@ void CPlayer::start()
 // Test if the player was hit by an invader's bomb.
 bool CPlayer::testHit(Point p)
 {
-	if(p.x >= p_pos.x && p.x <= p_pos.x+(IPS*5) && 
+	if(p.x >= p_pos.x-1 && p.x <= p_pos.x+(IPS*5)-1 && 
 			p.y >= p_pos.y && p.y <= p_pos.y+(IPS*5))
 			return true;
 	else

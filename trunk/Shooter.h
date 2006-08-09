@@ -23,6 +23,7 @@
 using namespace std;
 #include ".\invaderset.h"
 #include ".\consts.h"
+#include ".\baseset.h"
 
 class CShooter
 {
