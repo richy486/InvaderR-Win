@@ -16,25 +16,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include ".\shooter.h"
+#include ".\bomber.h"
 
-CShooter::CShooter(void)
+CBomber::CBomber(void)
 {
 }
 
-CShooter::~CShooter(void)
+CBomber::~CBomber(void)
 {
 }
-// Shoot from a Point (the player).
-void CShooter::shoot(Point p)
+CBomber* CBomber::getInstance()
+{
+	static CBomber instance;
+    return &instance;
+}
+// Shoot a bomb.
+void CBomber::shoot(Point p)
 {
 	Point t_p;
 	t_p.x = p.x +(2.5*IPS);
-	t_p.y = p.y +(5*IPS);
+	t_p.y = p.y;
 	shots.push_back(t_p);
 }
-// Move the shot up the screen until it has left at the top or has hit an invader.
-void CShooter::progress()
+// Move a bomb down the screen.
+void CBomber::progress()
 {
 	list<Point>::iterator iter;
 
@@ -44,27 +49,33 @@ void CShooter::progress()
 		Point t_p;
 		t_p.x = iter->x;
 		t_p.y = iter->y;
-		if(iter->y >= 320 || CInvaderSet::getInstance()->testHits(t_p) )
+		if(iter->y <= 0)
 		{
 			iter = shots.erase(iter);
 		}
+		if(CPlayer::getInstance()->testHit(t_p))
+		{
+			iter = shots.erase(iter);
+			CInvaderSet::getInstance()->setPlaying(false);
+			CInvaderSet::getInstance()->setOutcome(false);
+		}
 		else
 		{
-			iter->y +=5;
+			iter->y -=5;
 			iter++; 
 		}
 		
 	}
 }
-// Kill all the shots.
-void CShooter::killAll()
+// Kill all the bombs.
+void CBomber::killAll()
 {
 	shots.clear();
 }
-// Draw all the shots.
-void CShooter::draw()
+// Draw the bombs.
+void CBomber::draw()
 {
-	glColor3f(0.0, 0.0, 1.0);
+	glColor3f(1.0, 0.0, 0.0);
 	list<Point>::iterator iter;
 	for(iter=shots.begin(); iter!=shots.end(); ++iter)
 	{
