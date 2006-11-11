@@ -93,3 +93,7 @@ void CShooter::destroyShot(int s)
 		i++;
 	}
 }
+void CShooter::clearShots()
+{
+	shots.clear();
+}

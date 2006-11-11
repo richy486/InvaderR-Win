@@ -45,12 +45,15 @@ public:
 	void slowdown(){gXMov *= SLOWDOWN;};
 
 	void start();
+	void makeImg();
 
 	bool getImgAt(int p);	// get the actual array values
 
 	bool testHit(point2D p);
 	void shoot();
 	void readyShoot(){rShoot = true;}
+
+	int getBlocks();
 };
 
 #endif

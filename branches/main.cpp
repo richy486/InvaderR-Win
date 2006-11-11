@@ -29,6 +29,7 @@
 #include "player.h"
 #include "bomber.h"
 #include "shooter.h"
+#include "end.h"
 
 // Screen surface  
 SDL_Surface *gScreen;
@@ -51,8 +52,9 @@ float gYMov;
 int gKeyLeft;
 int gKeyRight;
 int gKeyCtrl;
+int gKeyEnter;
 
-
+int startAmount = 20;
 unsigned int blend_avg(unsigned int source, unsigned int target)
 {
   unsigned int sourcer = (source >>  0) & 0xff;
@@ -195,7 +197,7 @@ void init()
 	gKeyLeft = 0;
 	gKeyRight = 0;
 	gKeyCtrl = 0;
-
+	gKeyEnter = 0;
 
 	if (SDL_NumJoysticks() > 0)
 	{
@@ -208,7 +210,7 @@ void init()
 		}
 	}
 
-	CInvaderSet::getInstance()->createBasicInvaders(50);
+	CInvaderSet::getInstance()->createBasicInvaders(startAmount);
 
 	gLastTick = SDL_GetTicks(); 
 }
@@ -235,6 +237,16 @@ void exe()
 		if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
 		if (gKeyCtrl) CPlayer::getInstance()->shoot();
 		if (!gKeyCtrl) CPlayer::getInstance()->readyShoot();
+		if (gKeyEnter && CEnd::getInstance()->getEnd())
+		{
+			CInvaderSet::getInstance()->clearInvaders();
+			CBomber::getInstance()->clearBombs();
+			CShooter::getInstance()->clearShots();
+			CInvaderSet::getInstance()->createBasicInvaders(startAmount);
+			CPlayer::getInstance()->makeImg();
+			CPlayer::getInstance()->start();
+			CPlayer::getInstance()->setMove(0);
+		}
 
 		if (gJoystick)
 		{
@@ -280,7 +292,21 @@ void exe()
 		if(CInvaderSet::getInstance()->testHits(p))
 			CShooter::getInstance()->destroyShot(i);
 	}
-	//cout << CInvaderSet::getInstance()->getNumInvaders() << "\n";
+	if(CInvaderSet::getInstance()->getNumInvaders() == 0)
+	{
+		CEnd::getInstance()->setEnd(true);
+		CEnd::getInstance()->displayWin();
+	}
+	else if(CPlayer::getInstance()->getBlocks() == 0)
+	{
+		CEnd::getInstance()->setEnd(true);
+		CEnd::getInstance()->displayLoose();
+	}
+	else
+	{
+		CEnd::getInstance()->setEnd(false);
+	}
+
 
 }
 void render()
@@ -334,6 +360,16 @@ void render()
 	{
 		p = CShooter::getInstance()->getShotPos(i);
 		drawrect( (int)p.x-(IPS/2), (int)p.y-(IPS/2), IPS, IPS, SHOTCOLOUR, true);
+	}
+
+	// draw win loose
+	if(CEnd::getInstance()->getEnd())
+	{
+		for(int i = 0; i < 25; i++)
+		{
+			if(CEnd::getInstance()->getImgAt(i))
+				drawrect( ((i/5)*TPS)+2.5*TPS, ((i%5)*TPS)+TPS, TPS, TPS, ENDCOLOUR, true);
+		}
 	}
 
 	// Unlock if needed
@@ -402,6 +438,9 @@ int main(int argc, char *argv[])
 				case SDLK_LCTRL:
 					gKeyCtrl = 1;
 					break;
+				case SDLK_RETURN:
+					gKeyEnter = 1;
+					break;
 				}
 				break;
 		
@@ -420,7 +459,9 @@ int main(int argc, char *argv[])
 				case SDLK_LCTRL:
 					gKeyCtrl = 0;
 					break;
-
+				case SDLK_RETURN:
+					gKeyEnter = 0;
+					break;
 				}
 				break;
 

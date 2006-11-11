@@ -20,6 +20,27 @@
 
 CPlayer::CPlayer(void)
 {
+	makeImg();
+
+	rShoot = true;
+}
+
+CPlayer::~CPlayer(void)
+{
+}
+CPlayer* CPlayer::getInstance()
+{
+	static CPlayer instance;
+    return &instance;
+}
+// Put the player in the start position.
+void CPlayer::start()
+{
+	pos.x = WIDTH / 2;
+	pos.y = HEIGHT - (PLAYERAREA/2);
+}
+void CPlayer::makeImg()
+{
 	for(int i = 0; i < 25; i++)
 	{
 		img[i] = false;
@@ -38,23 +59,6 @@ CPlayer::CPlayer(void)
 	img[18] = true;
 	img[23] = true;
 	img[24] = true;
-
-	rShoot = true;
-}
-
-CPlayer::~CPlayer(void)
-{
-}
-CPlayer* CPlayer::getInstance()
-{
-	static CPlayer instance;
-    return &instance;
-}
-// Put the player in the start position.
-void CPlayer::start()
-{
-	pos.x = WIDTH / 2;
-	pos.y = HEIGHT - (PLAYERAREA/2);
 }
 bool CPlayer::getImgAt(int p)
 {
@@ -86,4 +90,14 @@ void CPlayer::shoot()
 		CShooter::getInstance()->shoot(pos);
 		rShoot = false;
 	}
+}
+int CPlayer::getBlocks()
+{
+	int count = 0;
+	for(int i = 0; i < 25; i++)
+	{
+		if(img[i])
+			count++;
+	}
+	return count;
 }

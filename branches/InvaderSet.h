@@ -40,6 +40,7 @@ public:
 	bool getInvaderImgAtWM(int invader, int pt);
 	point2D getInvaderPos(int invader);
 	bool testHits(point2D p);
+	void clearInvaders();
 };
 
 #endif

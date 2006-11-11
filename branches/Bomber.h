@@ -20,6 +20,7 @@ public:
 
 	void drop(point2D p);
 	void progress();
+	void clearBombs();
 };
 
 #endif

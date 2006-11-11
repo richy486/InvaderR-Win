@@ -79,3 +79,7 @@ void CBomber::progress()
 		}
 	}
 }
+void CBomber::clearBombs()
+{
+	bombs.clear();
+}

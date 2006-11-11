@@ -21,6 +21,7 @@ public:
 	void shoot(point2D p);
 	void progress();
 	void destroyShot(int s);
+	void clearShots();
 };
 
 #endif

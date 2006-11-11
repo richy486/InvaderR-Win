@@ -60,9 +60,9 @@ void CInvaderSet::actionInvaders()
 			iTemp.corrupt();
 			lInvaders.push_back(iTemp);
 			iter->aceptSplitMsg();
-			cout << lInvaders.size() << "\n";
+			//cout << lInvaders.size() << "\n";
 		}
-		iter->addJuice(0.0001);//0.0001
+		iter->addJuice(0.001);//0.0001
 	}
 }
 bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
@@ -109,4 +109,8 @@ bool CInvaderSet::testHits(point2D p)
 		}
 	}
 	return false;
+}
+void CInvaderSet::clearInvaders()
+{
+	lInvaders.clear();
 }

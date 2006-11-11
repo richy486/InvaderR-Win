@@ -137,7 +137,7 @@ void CInvader::generateBasic()
 	des_split = (double)(rand()%100);
 	des_shoot = 100.0 - des_split;
 	split_min = rand()%100;
-	shoot_min = rand()%100;
+	shoot_min = rand()%50;
 	splitMsg = false;
 
 	cout << des_split << " desire to split\n";
