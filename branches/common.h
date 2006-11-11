@@ -40,8 +40,10 @@ using namespace std;
 #define RADIUS 12
 // Background color
 #define BGCOLOR 0x000000
-// Invader color
+// Invader colour
 #define INVADERCOLOR 0x9f1f1f
+// Bomb colour
+#define BOMBCOLOR 0xff0000
 // Player color
 #define PLAYERCOLOR 0x1F3D9F
 // Definition of PI
@@ -61,9 +63,14 @@ using namespace std;
 #define LEVELHEIGHT 10
 
 // Tile size (width and height)
-#define TILESIZE 32
+#define TILESIZE 1
 // size of a invader pixel
 #define IPS 5
+
+// Splitting cost
+#define SPLITCOST 20
+// Shooting cost
+#define SHOOTCOST 1
 
 struct point2D{double x; double y;};
 struct point3D{double x; double y; double z;};

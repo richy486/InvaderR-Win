@@ -36,6 +36,7 @@ public:
 
 	void createBasicInvaders(int amount);
 	void moveInvaders();
+	void actionInvaders();
 	bool getInvaderImgAtWM(int invader, int pt);
 	point2D getInvaderPos(int invader);
 };

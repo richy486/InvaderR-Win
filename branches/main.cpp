@@ -27,6 +27,7 @@
 #include "common.h"
 #include "InvaderSet.h"
 #include "player.h"
+#include "bomber.h"
 
 // Screen surface  
 SDL_Surface *gScreen;
@@ -51,20 +52,6 @@ int gKeyRight;
 int gKeyUp;
 int gKeyDown;
 
-// Level data
-unsigned char gLevel[LEVELWIDTH * LEVELHEIGHT] =
-{
-  0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,
-  0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,
-  0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,
-  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  0,1,0,0,0,0,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,
-  1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,
-  1,1,1,1,1,0,1,0,1,1,1,0,1,1,1
-};
 unsigned int blend_avg(unsigned int source, unsigned int target)
 {
   unsigned int sourcer = (source >>  0) & 0xff;
@@ -183,8 +170,11 @@ void drawrect(int x, int y, int width, int height, int c, bool avg)
       // and no pixels get drawn!
       for (j = 0; j < len; j++)
 	  {
-		  if(((unsigned int*)gScreen->pixels)[ofs + j] == BGCOLOR || avg == false)
+		  if(avg == false)
+		  {
 			((unsigned int*)gScreen->pixels)[ofs + j] = c;
+			//((unsigned int*)gScreen->pixels)[ofs + j] = blend_avg(((unsigned int*)gScreen->pixels)[ofs + j], c);
+		  }
 		  else
 		  {
 			  ((unsigned int*)gScreen->pixels)[ofs + j] = blend_add(((unsigned int*)gScreen->pixels)[ofs + j], c);
@@ -217,7 +207,7 @@ void init()
 		}
 	}
 
-	CInvaderSet::getInstance()->createBasicInvaders(10);
+	CInvaderSet::getInstance()->createBasicInvaders(1);
 
 	gLastTick = SDL_GetTicks(); 
 }
@@ -238,63 +228,68 @@ void exe()
     return;
   }
 
-  while (gLastTick < tick)
-  {
-	  if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
-    if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
+	while (gLastTick < tick)
+	{
+		if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
+		if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
 
-	if (gJoystick)
-    {
-      CPlayer::getInstance()->addMove((SDL_JoystickGetAxis(gJoystick, 0) / 32768.0f) * THRUST);
-    }
+		if (gJoystick)
+		{
+		  CPlayer::getInstance()->addMove((SDL_JoystickGetAxis(gJoystick, 0) / 32768.0f) * THRUST);
+		}
 
-	CPlayer::getInstance()->slowdown();
-	CPlayer::getInstance()->posPlusMove();
+		CPlayer::getInstance()->slowdown();
+		CPlayer::getInstance()->posPlusMove();
 
-	// Collision with the screen borders
-	if (CPlayer::getInstance()->getPos().x > WIDTH - RADIUS)
-    {
-      CPlayer::getInstance()->posMinusMove();
-	  CPlayer::getInstance()->setMove(-CPlayer::getInstance()->getMove() * COLLISIONSLOWDOWN);
-    }
+		// Collision with the screen borders
+		if (CPlayer::getInstance()->getPos().x > WIDTH - RADIUS)
+		{
+			CPlayer::getInstance()->posMinusMove();
+			CPlayer::getInstance()->setMove(-CPlayer::getInstance()->getMove() * COLLISIONSLOWDOWN);
+		}
 
-    if (CPlayer::getInstance()->getPos().x < RADIUS)
-    {
-      CPlayer::getInstance()->posMinusMove();
-	  CPlayer::getInstance()->setMove(-CPlayer::getInstance()->getMove() * COLLISIONSLOWDOWN);
-    }
+		if (CPlayer::getInstance()->getPos().x < RADIUS)
+		{
+			CPlayer::getInstance()->posMinusMove();
+			CPlayer::getInstance()->setMove(-CPlayer::getInstance()->getMove() * COLLISIONSLOWDOWN);
+		}
 
-    gLastTick += 1000 / PHYSICSFPS;
-  }
+		gLastTick += 1000 / PHYSICSFPS;
+	}
 
-  // Lock surface if needed
+	// move invaders
+	CInvaderSet::getInstance()->moveInvaders();
+
+	// do action on invaders
+	CInvaderSet::getInstance()->actionInvaders();
+
+	// move bombs
+	CBomber::getInstance()->progress();
+}
+void render()
+{   
+	// Lock surface if needed
   if (SDL_MUSTLOCK(gScreen))
     if (SDL_LockSurface(gScreen) < 0) 
       return;
 
-  
-
-	// move invaders
-	CInvaderSet::getInstance()->moveInvaders();
-}
-void render()
-{   
-  // fill background
-  for (int i = 0; i < LEVELHEIGHT; i++)
-  {
-    for (int j = 0; j < LEVELWIDTH; j++)
-    {
-      drawrect(j * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE, 
-               BGCOLOR, false);
-    }
-  }
+	// fill background
+	for (int i = 0; i < HEIGHT; i++)
+	{
+		for (int j = 0; j < WIDTH; j++)
+		{
+		  drawrect(j * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE, 
+				   BGCOLOR, false);
+		}
+	}
+	//drawrect(0, 0, LEVELWIDTH, LEVELHEIGHT, BGCOLOR, false);
 
 	// draw invaders
 	point2D p;
 	for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
 	{
 		p = CInvaderSet::getInstance()->getInvaderPos(i);
-		for(int j = 0; j < 30; j++)
+		for(int j = 0; j < 25; j++)
 		{
 			if(CInvaderSet::getInstance()->getInvaderImgAtWM(i,j))
 				drawrect( ((int)p.x+((j/5)*IPS))-(IPS*2.5f), ((int)p.y+((j%5)*IPS))-(IPS*2.5f), IPS, IPS, INVADERCOLOR, true);
@@ -304,12 +299,19 @@ void render()
 
 	// draw the player object
 	p = CPlayer::getInstance()->getPos();
-	for(int i = 0; i < 30; i++)
+	for(int i = 0; i < 25; i++)
 	{
-		if(CPlayer::getInstance()->getImgAtWM(i))
+		if(CPlayer::getInstance()->getImgAt(i))
 			drawrect( ((int)p.x+((i/5)*IPS))-(IPS*2.5f), ((int)p.y+((i%5)*IPS))-(IPS*2.5f), IPS, IPS, PLAYERCOLOR, true);
 	}
-        
+    
+	// draw bombs
+	for(int i = 0; i < CBomber::getInstance()->getNumBombs(); i++)
+	{
+		p = CBomber::getInstance()->getBombPos(i);
+		drawrect( (int)p.x-(IPS/2), (int)p.y-(IPS/2), IPS, IPS, BOMBCOLOR, true);
+	}
+
 	// Unlock if needed
 	if (SDL_MUSTLOCK(gScreen)) 
 	SDL_UnlockSurface(gScreen);

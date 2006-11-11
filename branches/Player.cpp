@@ -20,7 +20,7 @@
 
 CPlayer::CPlayer(void)
 {
-	for(int i = 0; i < 15; i++)
+	for(int i = 0; i < 25; i++)
 	{
 		img[i] = false;
 	}
@@ -33,6 +33,11 @@ CPlayer::CPlayer(void)
 	img[11] = true;
 	img[12] = true;
 	img[13] = true;
+	img[16] = true;
+	img[17] = true;
+	img[18] = true;
+	img[23] = true;
+	img[24] = true;
 }
 
 CPlayer::~CPlayer(void)
@@ -51,19 +56,30 @@ void CPlayer::start()
 }
 bool CPlayer::getImgAt(int p)
 {
-	if(p >= 0 && p <= 15) 
+	if(p >= 0 && p < 25) 
 		return img[p]; 
 	else 
 		return 0;
 }
-bool CPlayer::getImgAtWM(int p)
+bool CPlayer::testHit(point2D p)
 {
-	if(p >= 0 && p < 15) 
-		return img[p]; 
-	else if(p >= 15 && p < 20)
-		return img[p-10];
-	else if(p >= 20 && p < 25)
-		return img[p-20];
-	else 
-		return 0;
+	// check if it is within the 5*5 range of the player
+	/*if( p.x+(IPS/2) >= pos.x-(2.5*IPS) && p.x-(IPS/2) <= pos.x+(2.5*IPS) &&
+		p.y+(IPS/2) >= pos.y-(2.5*IPS) && p.y-(IPS/2) <= pos.y+(2.5*IPS) )
+	{*/
+		for(int i = 0; i < 25; i++)
+		{
+			//p.x >= p_pos.x+((i/5)*IPS)	&& p.x <= p_pos.x+((i/5)*IPS)+IPS
+			//p.y >= p_pos.y+((i%5)*IPS)	&& p.y <= p_pos.y+((i%5)*IPS)+IPS
+			if( p.x >= (pos.x+((i/5)*IPS))-(IPS*2.5f) && p.x <= (pos.x+((i/5)*IPS))-(IPS*2.5f)+IPS &&
+				p.y >= (pos.y+((i%5)*IPS))-(IPS*2.5f) && p.y <= (pos.y+((i%5)*IPS))-(IPS*2.5f)+IPS &&
+				img[i] == true)
+			{
+				img[i] = false;
+				return true;
+			}
+		}
+	//}
+	//else
+	return false;
 }

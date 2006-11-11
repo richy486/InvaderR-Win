@@ -25,7 +25,7 @@ class CPlayer
 {
 protected:
 	point2D pos;
-	bool img[15];
+	bool img[25];
 	double gXMov;
 public:
 	CPlayer(void);
@@ -45,8 +45,8 @@ public:
 	void start();
 
 	bool getImgAt(int p);	// get the actual array values
-	bool getImgAtWM(int p);	// get the full image by including mirrored values
 
+	bool testHit(point2D p);
 };
 
 #endif

@@ -34,17 +34,24 @@ void CInvader::generateImg()
 		switch(rand()%2)
 		{
 		case 0:
-			img[i] = false;
+			imgB[i] = false;
 			break;
 		case 1:
-			img[i] = true;
+			imgB[i] = true;
 			atLeastThree++;
 			break;
 		default:
-			img[i] = false;
+			imgB[i] = false;
 			break;
 		}
+		imgU[i] = imgB[i];
 	}
+
+	for(int i = 15; i < 20; i++)
+		imgU[i] = imgB[i-10];
+
+	for(int i = 20; i < 25; i++)
+		imgU[i] = imgB[i-20];
 	
 	// Make sure there are enough pixels in the invader image.
 	if(atLeastThree < 3)
@@ -59,21 +66,64 @@ void CInvader::generateInterPoints()
 	p2.x = rand()%(WIDTH - 5) + 5;
 	p2.y = rand()%(HEIGHT - PLAYERAREA*2) + 5;
 }
-bool CInvader::getImgAt(int p)
+void CInvader::corruptImg()
 {
-	if(p >= 0 && p <= 15) 
-		return img[p]; 
+	int r;
+	for(int i = 0; i < 15; i++)
+	{
+		r = rand()%20;
+		if(imgB[i] && r == 0)
+		{
+			imgB[i] = false;
+		}
+		if(!imgB[i] && r == 0)
+		{
+			imgB[i] = true;
+		}
+		imgU[i] = imgB[i];
+	}
+	for(int i = 15; i < 20; i++)
+		imgU[i] = imgB[i-10];
+
+	for(int i = 20; i < 25; i++)
+		imgU[i] = imgB[i-20];
+}
+void CInvader::corruptInterPoints()
+{
+	double r;
+
+	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
+	if(r + p1.x > (IPS*10) && r + p1.x < WIDTH-(IPS*10))
+		p1.x += r;
+	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
+	if(r + p1.y > (IPS*10) && r + p1.y < (HEIGHT - PLAYERAREA*2)-(IPS*10))
+		p1.y += r;
+
+	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
+	if(r + pc.x > (IPS*10) && r + pc.x < WIDTH-(IPS*10))
+		pc.x += r;
+	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
+	if(r + pc.y > (IPS*10) && r + pc.y < (HEIGHT - PLAYERAREA*2)-(IPS*10))
+		pc.y += r;
+
+	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
+	if(r + p2.x > (IPS*10) && r + p2.x < WIDTH-(IPS*10))
+		p2.x += r;
+	r = (rand()%(3*IPS))-(1.5*IPS);
+	if(r + p2.y > (IPS*10) && r + p2.y < (HEIGHT - PLAYERAREA*2)-(IPS*10))
+		p2.y += r;
+}
+bool CInvader::getImgAtB(int p)
+{
+	if(p >= 0 && p < 15) 
+		return imgB[p]; 
 	else 
 		return 0;
 }
-bool CInvader::getImgAtWM(int p)
+bool CInvader::getImgAtU(int p)
 {
-	if(p >= 0 && p < 15) 
-		return img[p]; 
-	else if(p >= 15 && p < 20)
-		return img[p-10];
-	else if(p >= 20 && p < 25)
-		return img[p-20];
+	if(p >= 0 && p < 25) 
+		return imgU[p]; 
 	else 
 		return 0;
 }
@@ -86,8 +136,30 @@ void CInvader::generateBasic()
 	juice = (double)100.0;
 	des_split = (double)(rand()%100);
 	des_shoot = 100.0 - des_split;
+	split_min = rand()%100;
+	shoot_min = rand()%100;
+	splitMsg = false;
+
+	cout << des_split << " desire to split\n";
+	cout << des_shoot << " desire to shoot\n";
+	cout << split_min << " split min\n";
+	cout << shoot_min << " shoot min\n";
+	cout << "----------------------------------\n";
 	
 	pos = p1;
+}
+void CInvader::corrupt()
+{
+	//t = 0.0;
+	corruptImg();
+	corruptInterPoints();
+	tFraction += ((rand()%10)-5)/10000.0f;
+	//juice stays the same
+	des_split = abs(des_split + ((rand()%10)-5));
+	des_shoot = abs(des_shoot + ((rand()%10)-5));
+	split_min = abs(split_min + ((rand()%10)-5));
+	shoot_min = abs(shoot_min + ((rand()%10)-5));
+	splitMsg = false;
 }
 void CInvader::move()
 {
@@ -117,12 +189,26 @@ void CInvader::move()
 }
 void CInvader::action()
 {
-	if(rand()%100 <= des_split)
+	double r = rand()%10000; // 10% change they will do something
+
+	if(r <= des_split)
 	{
 		//split
+		if(juice >= split_min && splitMsg == false && juice >= 1.0)
+		{
+			juice /= 2;
+			splitMsg = true;
+			//cout << juice << " after split\n";
+		}
 	}
-	else
+	else if(r <= 100)
 	{
 		//shoot
+		if(juice >= shoot_min && juice >= SHOOTCOST)
+		{
+			juice -= SHOOTCOST;
+			CBomber::getInstance()->drop(pos);
+			//cout << juice << " after shot\n";
+		}
 	}
 }

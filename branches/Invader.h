@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include "common.h"
+#include "bomber.h"
 
 
 class CInvader
@@ -29,27 +30,39 @@ protected:
 	point2D p1, pc, p2;	// points to intopolate through
 	point2D pos;		// position
 	double tFraction;	// fraction of t for intopolation (0.005);
-	bool img[15];		// image of invader, to be mirriored
+	bool imgB[15];		// base image of invader, to be mirriored
+	bool imgU[30];		// usable image of invader to be deformed
 	double t;			// position in intopolation 0 <= t <= 1
 	bool forward;		// is invader being intopolated forward or backwards
 
 	double juice;		// how much energy/fule/juice the invader has to use
+	double shoot_min;	// will not shoot if have lower than this value in juice
+	double split_min;	// will not split if have lower than this value in juice
 	double des_split;	// desire to split
 	double des_shoot;	// desire to shoot
+	bool splitMsg;		// true if invader wants to split
 	
 	void generateImg();
 	void generateInterPoints();
+
+	void corruptImg();
+	void corruptInterPoints();
 
 public:
 	CInvader(void);
 	~CInvader(void);
 
 	point2D getPos(){return pos;}
+	bool getSplitMsg(){return splitMsg;}
+	void aceptSplitMsg(){splitMsg = false;}
+	point2D getPointOne(){return p1;}
+	void addJuice(double j){juice += j;}
 	
-	bool getImgAt(int p);	// get the actual array values
-	bool getImgAtWM(int p);	// get the full image by including mirrored values
+	bool getImgAtB(int p);	// get the actual array values
+	bool getImgAtU(int p);	// get the full image by including mirrored values
 
 	void generateBasic();
+	void corrupt();
 
 	void move();
 	void action();

@@ -48,6 +48,23 @@ void CInvaderSet::moveInvaders()
 		iter->move();
 	}
 }
+void CInvaderSet::actionInvaders()
+{
+	list<CInvader>::iterator iter;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		iter->action();
+		if(iter->getSplitMsg())
+		{
+			CInvader iTemp = *iter;
+			iTemp.corrupt();
+			lInvaders.push_back(iTemp);
+			iter->aceptSplitMsg();
+			cout << lInvaders.size() << "\n";
+		}
+		iter->addJuice(0.1);//0.0001
+	}
+}
 bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
 {
 	list<CInvader>::iterator iter;
@@ -55,7 +72,7 @@ bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		if(i == invader)
-			return iter->getImgAtWM(pt);
+			return iter->getImgAtU(pt);
 		
 		i++;
 	}
