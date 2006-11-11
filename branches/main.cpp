@@ -26,6 +26,7 @@
 #endif
 #include "common.h"
 #include "InvaderSet.h"
+#include "player.h"
 
 // Screen surface  
 SDL_Surface *gScreen;
@@ -64,7 +65,61 @@ unsigned char gLevel[LEVELWIDTH * LEVELHEIGHT] =
   1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,
   1,1,1,1,1,0,1,0,1,1,1,0,1,1,1
 };
+unsigned int blend_avg(unsigned int source, unsigned int target)
+{
+  unsigned int sourcer = (source >>  0) & 0xff;
+  unsigned int sourceg = (source >>  8) & 0xff;
+  unsigned int sourceb = (source >> 16) & 0xff;
+  unsigned int targetr = (target >>  0) & 0xfd;
+  unsigned int targetg = (target >>  8) & 0xfd;
+  unsigned int targetb = (target >> 16) & 0xfd;
 
+  targetr = (sourcer + targetr) / 2.1f;
+  targetg = (sourceg + targetg) / 2.1f;
+  targetb = (sourceb + targetb) / 2.1f;
+
+  return (targetr <<  0) |
+         (targetg <<  8) |
+         (targetb << 16);
+}
+unsigned int blend_mul(unsigned int source, unsigned int target)
+{
+  unsigned int sourcer = (source >>  0) & 0xff;
+  unsigned int sourceg = (source >>  8) & 0xff;
+  unsigned int sourceb = (source >> 16) & 0xff;
+  unsigned int targetr = (target >>  0) & 0xff;
+  unsigned int targetg = (target >>  8) & 0xff;
+  unsigned int targetb = (target >> 16) & 0xff;
+
+  targetr = (sourcer * targetr) >> 8;
+  targetg = (sourceg * targetg) >> 8;
+  targetb = (sourceb * targetb) >> 8;
+
+  return (targetr <<  0) |
+         (targetg <<  8) |
+         (targetb << 16);
+}
+unsigned int blend_add(unsigned int source, unsigned int target)
+{
+  unsigned int sourcer = (source >>  0) & 0xff;
+  unsigned int sourceg = (source >>  8) & 0xff;
+  unsigned int sourceb = (source >> 16) & 0xff;
+  unsigned int targetr = (target >>  0) & 0xff;
+  unsigned int targetg = (target >>  8) & 0xff;
+  unsigned int targetb = (target >> 16) & 0xff;
+
+  targetr += sourcer;
+  targetg += sourceg;
+  targetb += sourceb;
+
+  if (targetr > 0xff) targetr = 0xff;
+  if (targetg > 0xff) targetg = 0xff;
+  if (targetb > 0xff) targetb = 0xff;
+
+  return (targetr <<  0) |
+         (targetg <<  8) |
+         (targetb << 16);
+}
 void drawcircle(int x, int y, int r, int c)
 {
   int i, j;
@@ -99,7 +154,7 @@ void drawcircle(int x, int y, int r, int c)
 }
 
 
-void drawrect(int x, int y, int width, int height, int c)
+void drawrect(int x, int y, int width, int height, int c, bool avg)
 {
   int i, j;
   for (i = 0; i < height; i++)
@@ -127,7 +182,15 @@ void drawrect(int x, int y, int width, int height, int c)
       // note that len may be 0 at this point, 
       // and no pixels get drawn!
       for (j = 0; j < len; j++)
-        ((unsigned int*)gScreen->pixels)[ofs + j] = c;
+	  {
+		  if(((unsigned int*)gScreen->pixels)[ofs + j] == BGCOLOR || avg == false)
+			((unsigned int*)gScreen->pixels)[ofs + j] = c;
+		  else
+		  {
+			  ((unsigned int*)gScreen->pixels)[ofs + j] = blend_add(((unsigned int*)gScreen->pixels)[ofs + j], c);
+		  }
+
+	  }
     }
   }
 }
@@ -135,11 +198,9 @@ void drawrect(int x, int y, int width, int height, int c)
 
 void init()
 {
-	gXPos = WIDTH / 2;
-	gYPos = HEIGHT - (PLAYERAREA/2);// / 2;
-	gXMov = 0;
-	gYMov = 0;
-
+	CPlayer::getInstance()->start();
+	CPlayer::getInstance()->setMove(0);
+	
 	gKeyLeft = 0;
 	gKeyRight = 0;
 	gKeyUp = 0;
@@ -156,7 +217,7 @@ void init()
 		}
 	}
 
-	CInvaderSet::getInstance()->createBasicInvaders(5);
+	CInvaderSet::getInstance()->createBasicInvaders(10);
 
 	gLastTick = SDL_GetTicks(); 
 }
@@ -166,10 +227,9 @@ void deinit()
   if (gJoystick)
     SDL_JoystickClose(gJoystick);
 }
-
-void render()
-{   
-  // Ask SDL for the time in milliseconds
+void exe()
+{
+	// Ask SDL for the time in milliseconds
   int tick = SDL_GetTicks();
 
   if (tick <= gLastTick) 
@@ -180,53 +240,28 @@ void render()
 
   while (gLastTick < tick)
   {
-    if (gKeyLeft) gXMov -= THRUST;
-    if (gKeyRight) gXMov += THRUST;
-    if (gKeyUp) gYMov -= THRUST;
-    if (gKeyDown) gYMov += THRUST;
+	  if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
+    if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
 
 	if (gJoystick)
     {
-      gXMov += (SDL_JoystickGetAxis(gJoystick, 0) / 32768.0f) * THRUST;
-      gYMov += (SDL_JoystickGetAxis(gJoystick, 1) / 32768.0f) * THRUST;
+      CPlayer::getInstance()->addMove((SDL_JoystickGetAxis(gJoystick, 0) / 32768.0f) * THRUST);
     }
 
-    gXMov *= SLOWDOWN;
-    gYMov *= SLOWDOWN;
-
-    gXPos += gXMov;
-    gYPos += gYMov;
-
-	//if (gLevel[(((int)gYPos) / TILESIZE) * LEVELWIDTH + ((int)gXPos) / TILESIZE] == 0)
-	//{
-	//	// player fell off - reset position
-	//	gXPos = WIDTH / 2;
-	//	gYPos = HEIGHT / 2;
-	//}
+	CPlayer::getInstance()->slowdown();
+	CPlayer::getInstance()->posPlusMove();
 
 	// Collision with the screen borders
-    if (gXPos > WIDTH - RADIUS)
+	if (CPlayer::getInstance()->getPos().x > WIDTH - RADIUS)
     {
-      gXPos -= gXMov;
-      gXMov = -gXMov * COLLISIONSLOWDOWN;
+      CPlayer::getInstance()->posMinusMove();
+	  CPlayer::getInstance()->setMove(-CPlayer::getInstance()->getMove() * COLLISIONSLOWDOWN);
     }
 
-    if (gXPos < RADIUS)
+    if (CPlayer::getInstance()->getPos().x < RADIUS)
     {
-      gXPos -= gXMov;
-      gXMov = -gXMov * COLLISIONSLOWDOWN;
-    }
-
-    if (gYPos > HEIGHT - RADIUS)
-    {
-      gYPos -= gYMov;
-      gYMov = -gYMov * COLLISIONSLOWDOWN;
-    }
-
-    if (gYPos < RADIUS)
-    {
-      gYPos -= gYMov;
-      gYMov = -gYMov * COLLISIONSLOWDOWN;
+      CPlayer::getInstance()->posMinusMove();
+	  CPlayer::getInstance()->setMove(-CPlayer::getInstance()->getMove() * COLLISIONSLOWDOWN);
     }
 
     gLastTick += 1000 / PHYSICSFPS;
@@ -237,47 +272,50 @@ void render()
     if (SDL_LockSurface(gScreen) < 0) 
       return;
 
+  
+
+	// move invaders
+	CInvaderSet::getInstance()->moveInvaders();
+}
+void render()
+{   
   // fill background
   for (int i = 0; i < LEVELHEIGHT; i++)
   {
     for (int j = 0; j < LEVELWIDTH; j++)
     {
       drawrect(j * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE, 
-               gLevel[i * LEVELWIDTH + j] ? 1 : FALLCOLOR);
+               BGCOLOR, false);
     }
   }
-  
-  // draw borders
- /* drawrect(0, 0, WIDTH, 8, WALLCOLOR);         
-  drawrect(0, 0, 8, HEIGHT, WALLCOLOR);         
-  drawrect(WIDTH - 8, 0, 8, HEIGHT, WALLCOLOR);         
-  drawrect(0, HEIGHT - 8, WIDTH, 8, WALLCOLOR);  */   
 
-	// move invaders
-  CInvaderSet::getInstance()->moveInvaders();
-
-  // draw invaders
-  point2D p;
-  for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
-  {
+	// draw invaders
+	point2D p;
+	for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
+	{
 		p = CInvaderSet::getInstance()->getInvaderPos(i);
-		drawrect((int)p.x, (int)p.y, 5, 5, WALLCOLOR);
-		//cout << p.x << " " << p.y << "\n";
+		for(int j = 0; j < 30; j++)
+		{
+			if(CInvaderSet::getInstance()->getInvaderImgAtWM(i,j))
+				drawrect( ((int)p.x+((j/5)*IPS))-(IPS*2.5f), ((int)p.y+((j%5)*IPS))-(IPS*2.5f), IPS, IPS, INVADERCOLOR, true);
+		}
 
-  }
+	}
 
-  // draw the player object
-  drawcircle((int)gXPos,
-             (int)gYPos,
-             RADIUS,
-             BALLCOLOR);
+	// draw the player object
+	p = CPlayer::getInstance()->getPos();
+	for(int i = 0; i < 30; i++)
+	{
+		if(CPlayer::getInstance()->getImgAtWM(i))
+			drawrect( ((int)p.x+((i/5)*IPS))-(IPS*2.5f), ((int)p.y+((i%5)*IPS))-(IPS*2.5f), IPS, IPS, PLAYERCOLOR, true);
+	}
         
-  // Unlock if needed
-  if (SDL_MUSTLOCK(gScreen)) 
-    SDL_UnlockSurface(gScreen);
+	// Unlock if needed
+	if (SDL_MUSTLOCK(gScreen)) 
+	SDL_UnlockSurface(gScreen);
 
-  // Tell SDL to update the whole gScreen
-  SDL_UpdateRect(gScreen, 0, 0, WIDTH, HEIGHT);  
+	// Tell SDL to update the whole gScreen
+	SDL_UpdateRect(gScreen, 0, 0, WIDTH, HEIGHT);  
 }
 
 
@@ -312,61 +350,51 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-  // Main loop: loop forever.
-  while (1)
-  {
-    // Render stuff
-    render();
+	// Main loop: loop forever.
+	while (1)
+	{
+		// execute movement
+		exe();
+		// Render stuff
+		render();
 
-    // Poll for events, and handle the ones we care about.
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) 
-    {
-      switch (event.type) 
-      {
-      case SDL_KEYDOWN:
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_LEFT:
-          gKeyLeft = 1;
-          break;
-        case SDLK_RIGHT:
-          gKeyRight = 1;
-          break;
-        /*case SDLK_UP:
-          gKeyUp = 1;
-          break;
-        case SDLK_DOWN:
-          gKeyDown = 1;*/
-          break;
-        }
-        break;
+		// Poll for events, and handle the ones we care about.
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) 
+		{
+		switch (event.type) 
+		{
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_LEFT:
+					gKeyLeft = 1;
+					break;
+				case SDLK_RIGHT:
+					gKeyRight = 1;
+					break;
+				}
+				break;
+		
+			case SDL_KEYUP:          
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_ESCAPE:
+					// If escape is pressed, return (and thus, quit)
+					return 0;
+				case SDLK_LEFT:
+					gKeyLeft = 0;
+					break;
+				case SDLK_RIGHT:
+					gKeyRight = 0;
+					break;
+				}
+				break;
 
-      case SDL_KEYUP:          
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_ESCAPE:
-          // If escape is pressed, return (and thus, quit)
-          return 0;
-        case SDLK_LEFT:
-          gKeyLeft = 0;
-          break;
-        case SDLK_RIGHT:
-          gKeyRight = 0;
-          break;
-        /*case SDLK_UP:
-          gKeyUp = 0;
-          break;
-        case SDLK_DOWN:
-          gKeyDown = 0;*/
-          break;
-        }
-        break;
-
-      case SDL_QUIT:
-        return(0);
-      }
-    }
+			case SDL_QUIT:
+				return(0);
+			}
+		}
   }
   return 0;
 }

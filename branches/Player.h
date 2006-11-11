@@ -26,12 +26,27 @@ class CPlayer
 protected:
 	point2D pos;
 	bool img[15];
+	double gXMov;
 public:
 	CPlayer(void);
 	~CPlayer(void);
+	static CPlayer* getInstance();
 
 	point2D getPos(){return pos;}
 	void setPos(point2D p){pos = p;}
+	void posPlusMove(){pos.x += gXMov;}
+	void posMinusMove(){pos.x -= gXMov;}
+	double getMove(){return gXMov;}
+	void setMove(double m){gXMov = m;}
+	void addMove(double m){gXMov += m;}
+	void subMove(double m){gXMov -= m;}
+	void slowdown(){gXMov *= SLOWDOWN;};
+
+	void start();
+
+	bool getImgAt(int p);	// get the actual array values
+	bool getImgAtWM(int p);	// get the full image by including mirrored values
+
 };
 
 #endif

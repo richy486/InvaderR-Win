@@ -39,15 +39,17 @@ using namespace std;
 // Radius of the player's ball
 #define RADIUS 12
 // Background color
-#define BGCOLOR 0x5f0000
-// Wall color
-#define WALLCOLOR 0x9f1f1f
+#define BGCOLOR 0x000000
+// Invader color
+#define INVADERCOLOR 0x9f1f1f
+// Player color
+#define PLAYERCOLOR 0x1F3D9F
 // Definition of PI
 #define PI 3.1415926535897932384626433832795f
 // Player's thrust value
-#define THRUST 0.1f
+#define THRUST 0.5f
 // Slowdown due to friction, etc.
-#define SLOWDOWN 0.99f
+#define SLOWDOWN 0.89f
 // Slowdown due to collision
 #define COLLISIONSLOWDOWN 0.9f
 // Physics iterations per second
@@ -57,10 +59,11 @@ using namespace std;
 #define LEVELWIDTH 15
 // Height of level data
 #define LEVELHEIGHT 10
-// Fall color
-#define FALLCOLOR 0x000000
+
 // Tile size (width and height)
 #define TILESIZE 32
+// size of a invader pixel
+#define IPS 5
 
 struct point2D{double x; double y;};
 struct point3D{double x; double y; double z;};

@@ -33,8 +33,10 @@ protected:
 	double t;			// position in intopolation 0 <= t <= 1
 	bool forward;		// is invader being intopolated forward or backwards
 
-	void setPos(point2D p){pos = p;} // probably shouldnt be used externaly
-
+	double juice;		// how much energy/fule/juice the invader has to use
+	double des_split;	// desire to split
+	double des_shoot;	// desire to shoot
+	
 	void generateImg();
 	void generateInterPoints();
 
@@ -50,7 +52,7 @@ public:
 	void generateBasic();
 
 	void move();
-
+	void action();
 	
 };
 

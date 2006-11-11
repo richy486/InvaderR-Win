@@ -53,11 +53,11 @@ void CInvader::generateImg()
 void CInvader::generateInterPoints()
 {
 	p1.x = rand()%(WIDTH - 5) + 5;
-	p1.y = rand()%(HEIGHT - PLAYERAREA) + 5;
+	p1.y = rand()%(HEIGHT - PLAYERAREA*2) + 5;
 	pc.x = rand()%(WIDTH - 5) + 5;
-	pc.y = rand()%(HEIGHT - PLAYERAREA) + 5;
+	pc.y = rand()%(HEIGHT) + 5;
 	p2.x = rand()%(WIDTH - 5) + 5;
-	p2.y = rand()%(HEIGHT - PLAYERAREA) + 5;
+	p2.y = rand()%(HEIGHT - PLAYERAREA*2) + 5;
 }
 bool CInvader::getImgAt(int p)
 {
@@ -83,6 +83,9 @@ void CInvader::generateBasic()
 	generateImg();
 	generateInterPoints();
 	tFraction = (rand()%100)/10000.0f;
+	juice = (double)100.0;
+	des_split = (double)(rand()%100);
+	des_shoot = 100.0 - des_split;
 	
 	pos = p1;
 }
@@ -110,5 +113,16 @@ void CInvader::move()
 			forward = true;
 			return;
 		}
+	}
+}
+void CInvader::action()
+{
+	if(rand()%100 <= des_split)
+	{
+		//split
+	}
+	else
+	{
+		//shoot
 	}
 }
