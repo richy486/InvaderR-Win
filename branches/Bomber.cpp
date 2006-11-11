@@ -43,7 +43,7 @@ void CBomber::progress()
 	point2D tp;
 	list<point2D>::iterator iter;
 	
-	for(int i = 0; i < 5; i++)
+	for(int i = 0; i < 1; i++)
 	{
 		iter=bombs.begin(); 
 		while(iter!=bombs.end())

@@ -46,6 +46,8 @@ using namespace std;
 #define BOMBCOLOR 0xff0000
 // Player color
 #define PLAYERCOLOR 0x1F3D9F
+// Shot colour
+#define SHOTCOLOUR 0x0000ff
 // Definition of PI
 #define PI 3.1415926535897932384626433832795f
 // Player's thrust value
@@ -65,7 +67,7 @@ using namespace std;
 // Tile size (width and height)
 #define TILESIZE 1
 // size of a invader pixel
-#define IPS 5
+#define IPS 2
 
 // Splitting cost
 #define SPLITCOST 20

@@ -26,7 +26,7 @@
 class CInvaderSet
 {
 protected:
-	std::list<CInvader> lInvaders;
+	list<CInvader> lInvaders;
 public:
 	CInvaderSet(void);
 	~CInvaderSet(void);
@@ -39,6 +39,7 @@ public:
 	void actionInvaders();
 	bool getInvaderImgAtWM(int invader, int pt);
 	point2D getInvaderPos(int invader);
+	bool testHits(point2D p);
 };
 
 #endif

@@ -20,6 +20,7 @@
 #define _PLAYER_H_
 
 #include "common.h"
+#include "shooter.h"
 
 class CPlayer
 {
@@ -27,6 +28,7 @@ protected:
 	point2D pos;
 	bool img[25];
 	double gXMov;
+	bool rShoot;
 public:
 	CPlayer(void);
 	~CPlayer(void);
@@ -47,6 +49,8 @@ public:
 	bool getImgAt(int p);	// get the actual array values
 
 	bool testHit(point2D p);
+	void shoot();
+	void readyShoot(){rShoot = true;}
 };
 
 #endif

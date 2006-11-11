@@ -200,6 +200,10 @@
 				RelativePath=".\Player.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Shooter.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -224,6 +228,10 @@
 			</File>
 			<File
 				RelativePath=".\Player.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Shooter.h"
 				>
 			</File>
 		</Filter>

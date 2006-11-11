@@ -28,6 +28,7 @@
 #include "InvaderSet.h"
 #include "player.h"
 #include "bomber.h"
+#include "shooter.h"
 
 // Screen surface  
 SDL_Surface *gScreen;
@@ -49,8 +50,8 @@ float gYMov;
 // Player's key status
 int gKeyLeft;
 int gKeyRight;
-int gKeyUp;
-int gKeyDown;
+int gKeyCtrl;
+
 
 unsigned int blend_avg(unsigned int source, unsigned int target)
 {
@@ -193,8 +194,8 @@ void init()
 	
 	gKeyLeft = 0;
 	gKeyRight = 0;
-	gKeyUp = 0;
-	gKeyDown = 0;
+	gKeyCtrl = 0;
+
 
 	if (SDL_NumJoysticks() > 0)
 	{
@@ -207,7 +208,7 @@ void init()
 		}
 	}
 
-	CInvaderSet::getInstance()->createBasicInvaders(1);
+	CInvaderSet::getInstance()->createBasicInvaders(50);
 
 	gLastTick = SDL_GetTicks(); 
 }
@@ -232,6 +233,8 @@ void exe()
 	{
 		if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
 		if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
+		if (gKeyCtrl) CPlayer::getInstance()->shoot();
+		if (!gKeyCtrl) CPlayer::getInstance()->readyShoot();
 
 		if (gJoystick)
 		{
@@ -265,6 +268,20 @@ void exe()
 
 	// move bombs
 	CBomber::getInstance()->progress();
+
+	// move shots
+	CShooter::getInstance()->progress();
+
+	// test for shot hits with invaders (this should be in CShooter class)
+	point2D p;
+	for(int i = 0; i < CShooter::getInstance()->getNumShots(); i++)
+	{
+		p = CShooter::getInstance()->getShotPos(i);
+		if(CInvaderSet::getInstance()->testHits(p))
+			CShooter::getInstance()->destroyShot(i);
+	}
+	//cout << CInvaderSet::getInstance()->getNumInvaders() << "\n";
+
 }
 void render()
 {   
@@ -310,6 +327,13 @@ void render()
 	{
 		p = CBomber::getInstance()->getBombPos(i);
 		drawrect( (int)p.x-(IPS/2), (int)p.y-(IPS/2), IPS, IPS, BOMBCOLOR, true);
+	}
+
+	// draw shots
+	for(int i = 0; i < CShooter::getInstance()->getNumShots(); i++)
+	{
+		p = CShooter::getInstance()->getShotPos(i);
+		drawrect( (int)p.x-(IPS/2), (int)p.y-(IPS/2), IPS, IPS, SHOTCOLOUR, true);
 	}
 
 	// Unlock if needed
@@ -375,6 +399,9 @@ int main(int argc, char *argv[])
 				case SDLK_RIGHT:
 					gKeyRight = 1;
 					break;
+				case SDLK_LCTRL:
+					gKeyCtrl = 1;
+					break;
 				}
 				break;
 		
@@ -390,6 +417,10 @@ int main(int argc, char *argv[])
 				case SDLK_RIGHT:
 					gKeyRight = 0;
 					break;
+				case SDLK_LCTRL:
+					gKeyCtrl = 0;
+					break;
+
 				}
 				break;
 

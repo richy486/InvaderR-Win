@@ -62,7 +62,7 @@ void CInvaderSet::actionInvaders()
 			iter->aceptSplitMsg();
 			cout << lInvaders.size() << "\n";
 		}
-		iter->addJuice(0.1);//0.0001
+		iter->addJuice(0.0001);//0.0001
 	}
 }
 bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
@@ -95,4 +95,18 @@ point2D CInvaderSet::getInvaderPos(int invader)
 	tp.x = 0.0;
 	tp.y = 0.0;
 	return tp;
+}
+bool CInvaderSet::testHits(point2D p)
+{
+	list<CInvader>::iterator iter;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		if(iter->testHit(p))
+		{
+			//if(iter->getBlocks() == 0)
+				iter = lInvaders.erase(iter);
+			return true;
+		}
+	}
+	return false;
 }

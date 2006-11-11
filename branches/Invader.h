@@ -66,7 +66,9 @@ public:
 
 	void move();
 	void action();
-	
+	bool testHit(point2D p);
+		
+	int getBlocks();
 };
 
 #endif

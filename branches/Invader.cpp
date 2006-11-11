@@ -212,3 +212,29 @@ void CInvader::action()
 		}
 	}
 }
+bool CInvader::testHit(point2D p)
+{
+	for(int i = 0; i < 25; i++)
+	{
+		/*if( p.x >= (pos.x+((i/5)*IPS))-(IPS*2.5f) && p.x <= (pos.x+((i/5)*IPS))-(IPS*2.5f)+IPS &&
+			p.y >= (pos.y+((i%5)*IPS))-(IPS*2.5f) && p.y <= (pos.y+((i%5)*IPS))-(IPS*2.5f)+IPS &&
+			imgU[i] == true)*/
+		if(p.x >= pos.x-(IPS*2.5f) && p.x <= pos.x+(IPS*2.5f) &&
+			p.y >= pos.y-(IPS*2.5f) && p.y <= pos.y+(IPS*2.5f))
+		{
+			//imgU[i] = false;
+			return true;
+		}
+	}
+	return false;
+}
+int CInvader::getBlocks()
+{
+	int count = 0;
+	for(int i = 0; i < 25; i++)
+	{
+		if(imgU[i])
+			count++;
+	}
+	return count;
+}
