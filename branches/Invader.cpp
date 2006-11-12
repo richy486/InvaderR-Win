@@ -59,16 +59,28 @@ void CInvader::generateImg()
 }
 void CInvader::generateInterPoints()
 {
-	p1.x = rand()%(WIDTH - 5) + 5;
-	p1.y = rand()%(HEIGHT - PLAYERAREA*2) + 5;
-	pc.x = rand()%(WIDTH - 5) + 5;
-	pc.y = rand()%(HEIGHT) + 5;
-	p2.x = rand()%(WIDTH - 5) + 5;
-	p2.y = rand()%(HEIGHT - PLAYERAREA*2) + 5;
+	p1.x = ( rand()%(WIDTH - (10*IPS)) ) + (5*IPS);
+	p1.y = ( rand()%(HEIGHT - (PLAYERAREA*2) - (10*IPS)) ) + (5*IPS);
+	pc.x = ( rand()%(WIDTH - (10*IPS)) ) + (5*IPS);
+	pc.y = ( rand()%(HEIGHT - (PLAYERAREA*2) - (10*IPS)) ) + (5*IPS);
+	p2.x = ( rand()%(WIDTH - (10*IPS)) ) + (5*IPS);
+	p2.y = ( rand()%(HEIGHT - (PLAYERAREA*2) - (10*IPS)) ) + (5*IPS);
+
+	// high in the x, small in the y
+	/*p1.x = rand()%WIDTH;
+	p1.y = rand()%(HEIGHT - (PLAYERAREA*2));
+	pc.x = rand()%WIDTH;
+	pc.y = rand()%(HEIGHT - (PLAYERAREA*2));
+	p2.x = rand()%WIDTH;
+	p2.y = rand()%(HEIGHT - (PLAYERAREA*2));*/
 }
 void CInvader::corruptImg()
 {
 	int r;
+	for(int i = 0; i < 25; i++)
+	{
+		imgU[i] = 0;
+	}
 	for(int i = 0; i < 15; i++)
 	{
 		r = rand()%20;
@@ -82,6 +94,11 @@ void CInvader::corruptImg()
 		}
 		imgU[i] = imgB[i];
 	}
+	if(getBlocks() < 3)
+	{
+		corruptImg();
+		return;
+	}
 	for(int i = 15; i < 20; i++)
 		imgU[i] = imgB[i-10];
 
@@ -93,24 +110,24 @@ void CInvader::corruptInterPoints()
 	double r;
 
 	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
-	if(r + p1.x > (IPS*10) && r + p1.x < WIDTH-(IPS*10))
+	if( (r + p1.x) > (IPS*10) && (r + p1.x) < (WIDTH-(IPS*10)) )
 		p1.x += r;
 	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
-	if(r + p1.y > (IPS*10) && r + p1.y < (HEIGHT - PLAYERAREA*2)-(IPS*10))
+	if( (r + p1.y) > (IPS*10) && (r + p1.y) < ((HEIGHT - (PLAYERAREA*2))-(IPS*10)) )
 		p1.y += r;
 
 	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
-	if(r + pc.x > (IPS*10) && r + pc.x < WIDTH-(IPS*10))
+	if( (r + pc.x) > (IPS*10) && (r + pc.x) < (WIDTH-(IPS*10)) )
 		pc.x += r;
 	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
-	if(r + pc.y > (IPS*10) && r + pc.y < (HEIGHT - PLAYERAREA*2)-(IPS*10))
+	if( (r + pc.y) > (IPS*10) && (r + pc.y) < ((HEIGHT - (PLAYERAREA*2))-(IPS*10)) )
 		pc.y += r;
 
 	r = (rand()%(3*IPS*5))-(1.5*IPS*5);
-	if(r + p2.x > (IPS*10) && r + p2.x < WIDTH-(IPS*10))
+	if( (r + p2.x) > (IPS*10) && (r + p2.x) < (WIDTH-(IPS*10)) )
 		p2.x += r;
 	r = (rand()%(3*IPS))-(1.5*IPS);
-	if(r + p2.y > (IPS*10) && r + p2.y < (HEIGHT - PLAYERAREA*2)-(IPS*10))
+	if( (r + p2.y) > (IPS*10) && (r + p2.y) < ((HEIGHT - (PLAYERAREA*2))-(IPS*10)) )
 		p2.y += r;
 }
 bool CInvader::getImgAtB(int p)
@@ -164,6 +181,10 @@ void CInvader::corrupt()
 void CInvader::move()
 {
 	// qudratic intopolation
+	if(t < 0.0)
+		t = 0.0;
+	if(t > 1.0)
+		t = 1.0;
 	pos.x = p1.x*pow((1-t),2) + 2*t*(1-t)*pc.x + p2.x*pow(t,2);
 	pos.y = p1.y*pow((1-t),2) + 2*t*(1-t)*pc.y + p2.y*pow(t,2);
 	if(forward)
@@ -216,11 +237,11 @@ bool CInvader::testHit(point2D p)
 {
 	for(int i = 0; i < 25; i++)
 	{
-		/*if( p.x >= (pos.x+((i/5)*IPS))-(IPS*2.5f) && p.x <= (pos.x+((i/5)*IPS))-(IPS*2.5f)+IPS &&
+		if( p.x >= (pos.x+((i/5)*IPS))-(IPS*2.5f) && p.x <= (pos.x+((i/5)*IPS))-(IPS*2.5f)+IPS &&
 			p.y >= (pos.y+((i%5)*IPS))-(IPS*2.5f) && p.y <= (pos.y+((i%5)*IPS))-(IPS*2.5f)+IPS &&
-			imgU[i] == true)*/
-		if(p.x >= pos.x-(IPS*2.5f) && p.x <= pos.x+(IPS*2.5f) &&
-			p.y >= pos.y-(IPS*2.5f) && p.y <= pos.y+(IPS*2.5f))
+			imgU[i] == true)
+		/*if(p.x >= pos.x-(IPS*2.5f) && p.x <= pos.x+(IPS*2.5f) &&
+			p.y >= pos.y-(IPS*2.5f) && p.y <= pos.y+(IPS*2.5f))*/
 		{
 			//imgU[i] = false;
 			return true;

@@ -233,11 +233,14 @@ void exe()
 
 	while (gLastTick < tick)
 	{
-		if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
-		if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
-		if (gKeyCtrl) CPlayer::getInstance()->shoot();
-		if (!gKeyCtrl) CPlayer::getInstance()->readyShoot();
-		if (gKeyEnter && CEnd::getInstance()->getEnd())
+		if(!CEnd::getInstance()->getEnd())
+		{
+			if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
+			if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
+			if (gKeyCtrl || SDL_JoystickGetButton(gJoystick, 2)) CPlayer::getInstance()->shoot();
+		}
+		if (!gKeyCtrl && !SDL_JoystickGetButton(gJoystick, 0)) CPlayer::getInstance()->readyShoot();
+		if (gKeyEnter || SDL_JoystickGetButton(gJoystick, 0))
 		{
 			CInvaderSet::getInstance()->clearInvaders();
 			CBomber::getInstance()->clearBombs();
@@ -290,18 +293,24 @@ void exe()
 	{
 		p = CShooter::getInstance()->getShotPos(i);
 		if(CInvaderSet::getInstance()->testHits(p))
+		{
 			CShooter::getInstance()->destroyShot(i);
+		}
 	}
+
+	// win!
 	if(CInvaderSet::getInstance()->getNumInvaders() == 0)
 	{
 		CEnd::getInstance()->setEnd(true);
 		CEnd::getInstance()->displayWin();
 	}
+	// loose
 	else if(CPlayer::getInstance()->getBlocks() == 0)
 	{
 		CEnd::getInstance()->setEnd(true);
 		CEnd::getInstance()->displayLoose();
 	}
+	// playing
 	else
 	{
 		CEnd::getInstance()->setEnd(false);
@@ -347,6 +356,7 @@ void render()
 		if(CPlayer::getInstance()->getImgAt(i))
 			drawrect( ((int)p.x+((i/5)*IPS))-(IPS*2.5f), ((int)p.y+((i%5)*IPS))-(IPS*2.5f), IPS, IPS, PLAYERCOLOR, true);
 	}
+	//cout << p.x << " " << p.y << "\n";
     
 	// draw bombs
 	for(int i = 0; i < CBomber::getInstance()->getNumBombs(); i++)
@@ -382,6 +392,9 @@ void render()
 
 
 // Entry point
+#ifdef __cplusplus
+	extern "C"
+#endif
 int main(int argc, char *argv[])
 {
 	srand( time(NULL));
@@ -429,6 +442,15 @@ int main(int argc, char *argv[])
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.sym)
 				{
+				case SDLK_UP:
+					for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
+					{
+						cout << CInvaderSet::getInstance()->getInvaderPos(i).x
+							<< " " << CInvaderSet::getInstance()->getInvaderPos(i).y
+							<< "\n";
+					}
+					cout << "===========================\n";
+					break;
 				case SDLK_LEFT:
 					gKeyLeft = 1;
 					break;

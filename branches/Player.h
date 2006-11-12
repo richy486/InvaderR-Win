@@ -21,6 +21,7 @@
 
 #include "common.h"
 #include "shooter.h"
+#include "end.h"
 
 class CPlayer
 {

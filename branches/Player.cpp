@@ -75,7 +75,7 @@ bool CPlayer::testHit(point2D p)
 		//p.y >= p_pos.y+((i%5)*IPS)	&& p.y <= p_pos.y+((i%5)*IPS)+IPS
 		if( p.x >= (pos.x+((i/5)*IPS))-(IPS*2.5f) && p.x <= (pos.x+((i/5)*IPS))-(IPS*2.5f)+IPS &&
 			p.y >= (pos.y+((i%5)*IPS))-(IPS*2.5f) && p.y <= (pos.y+((i%5)*IPS))-(IPS*2.5f)+IPS &&
-			img[i] == true)
+			img[i] == true && !CEnd::getInstance()->getEnd())
 		{
 			img[i] = false;
 			return true;
