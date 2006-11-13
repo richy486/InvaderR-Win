@@ -54,7 +54,7 @@ int gKeyRight;
 int gKeyCtrl;
 int gKeyEnter;
 
-int startAmount = 20;
+int startAmount = 10;
 unsigned int blend_avg(unsigned int source, unsigned int target)
 {
   unsigned int sourcer = (source >>  0) & 0xff;
@@ -242,6 +242,13 @@ void exe()
 		if (!gKeyCtrl && !SDL_JoystickGetButton(gJoystick, 0)) CPlayer::getInstance()->readyShoot();
 		if (gKeyEnter || SDL_JoystickGetButton(gJoystick, 0))
 		{
+			for (int i = 0; i < HEIGHT; i++)
+			{
+				for (int j = 0; j < WIDTH; j++)
+				{
+				  drawrect(j * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE, BGCOLOR, false);
+				}
+			}
 			CInvaderSet::getInstance()->clearInvaders();
 			CBomber::getInstance()->clearBombs();
 			CShooter::getInstance()->clearShots();
@@ -277,6 +284,9 @@ void exe()
 
 	// move invaders
 	CInvaderSet::getInstance()->moveInvaders();
+
+	// Find mates
+	CInvaderSet::getInstance()->findClosestMates();
 
 	// do action on invaders
 	CInvaderSet::getInstance()->actionInvaders();
@@ -330,21 +340,55 @@ void render()
 	{
 		for (int j = 0; j < WIDTH; j++)
 		{
-		  drawrect(j * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE, 
-				   BGCOLOR, false);
+		  drawrect(j * TILESIZE, i * TILESIZE, TILESIZE, TILESIZE, BGCOLOR, false);
 		}
 	}
 	//drawrect(0, 0, LEVELWIDTH, LEVELHEIGHT, BGCOLOR, false);
 
 	// draw invaders
 	point2D p;
+	unsigned int invaderColour;
 	for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
 	{
+		if(CInvaderSet::getInstance()->getInvaderSex(i) == MALE)
+			invaderColour = M_INVADERCOLOR;
+		else
+			invaderColour = F_INVADERCOLOR;
+
 		p = CInvaderSet::getInstance()->getInvaderPos(i);
 		for(int j = 0; j < 25; j++)
 		{
 			if(CInvaderSet::getInstance()->getInvaderImgAtWM(i,j))
-				drawrect( ((int)p.x+((j/5)*IPS))-(IPS*2.5f), ((int)p.y+((j%5)*IPS))-(IPS*2.5f), IPS, IPS, INVADERCOLOR, true);
+			{
+				drawrect( ((int)p.x+((j/5)*IPS))-(IPS*2.5f), ((int)p.y+((j%5)*IPS))-(IPS*2.5f), IPS, IPS, invaderColour, CInvaderSet::getInstance()->getInvaderSex(i));
+			}
+		}
+
+	}
+
+	// draw invaders' lines
+	point2D po;
+	for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
+	{
+		if(CInvaderSet::getInstance()->getInvaderSex(i) == MALE)
+			invaderColour = M_INVADERCOLOR;
+		else
+			invaderColour = F_INVADERCOLOR;
+
+		for(double t = 0.0; t <= 1.0; t+=0.01)
+		{
+			if(t <= 0.0)
+				t = 0.0;
+			if(t >= 1.0)
+				t = 1.0;
+			po.x = CInvaderSet::getInstance()->getInvaderLIP(i,0).x*pow((1-t),2) 
+				+ 2*t*(1-t)*CInvaderSet::getInstance()->getInvaderLIP(i,1).x 
+				+ CInvaderSet::getInstance()->getInvaderLIP(i,2).x*pow(t,2);
+			po.y = CInvaderSet::getInstance()->getInvaderLIP(i,0).y*pow((1-t),2) 
+				+ 2*t*(1-t)*CInvaderSet::getInstance()->getInvaderLIP(i,1).y 
+				+ CInvaderSet::getInstance()->getInvaderLIP(i,2).y*pow(t,2);
+
+			drawrect( (int)po.x, (int)po.y, 1, 1, invaderColour, true);
 		}
 
 	}

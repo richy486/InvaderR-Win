@@ -20,6 +20,7 @@
 #define _INVADERSET_H_
 
 #include <list>
+#include <math.h>
 #include "common.h"
 #include "Invader.h"
 
@@ -37,10 +38,17 @@ public:
 	void createBasicInvaders(int amount);
 	void moveInvaders();
 	void actionInvaders();
+	bool testNoJuice();
 	bool getInvaderImgAtWM(int invader, int pt);
+	bool getInvaderSex(int invader);
 	point2D getInvaderPos(int invader);
 	bool testHits(point2D p);
 	void clearInvaders();
+	void corruptAll();
+	void findClosestMates();
+
+	point2D getInvaderLIP(int invader, int p);
+	
 };
 
 #endif

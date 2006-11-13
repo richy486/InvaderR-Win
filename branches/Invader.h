@@ -36,11 +36,15 @@ protected:
 	bool forward;		// is invader being intopolated forward or backwards
 
 	double juice;		// how much energy/fule/juice the invader has to use
+	bool sex;			// the sex of the invader
 	double shoot_min;	// will not shoot if have lower than this value in juice
 	double split_min;	// will not split if have lower than this value in juice
 	double des_split;	// desire to split
 	double des_shoot;	// desire to shoot
 	bool splitMsg;		// true if invader wants to split
+	int breedMsg;		// 0 if not breeding, 1 if breeding, 2 if have recently breeded.
+	point2D posCloMate;	// the position of closest mate.
+	bool followingMate;// if a mate ahs been found to move towards;
 	
 	void generateImg();
 	void generateInterPoints();
@@ -57,18 +61,25 @@ public:
 	void aceptSplitMsg(){splitMsg = false;}
 	point2D getPointOne(){return p1;}
 	void addJuice(double j){juice += j;}
+	double getJuice(){return juice;}
+	int getBreedMsg(){return breedMsg;}
+	void setBreedMsg(int b){if(b==NOT||b==AM||b==DID) breedMsg = b;}
+	bool getSex(){return sex;}
+	void setCloMate(point2D p, bool l){posCloMate = p; followingMate = l;}
 	
 	bool getImgAtB(int p);	// get the actual array values
 	bool getImgAtU(int p);	// get the full image by including mirrored values
 
 	void generateBasic();
 	void corrupt();
+	void parentAtributes();
 
 	void move();
 	void action();
 	bool testHit(point2D p);
 		
 	int getBlocks();
+	point2D getIP(int p);
 };
 
 #endif

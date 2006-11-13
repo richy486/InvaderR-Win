@@ -151,12 +151,15 @@ void CInvader::generateBasic()
 	generateInterPoints();
 	tFraction = (rand()%100)/10000.0f;
 	juice = (double)100.0;
+	sex = rand()%2;
 	des_split = (double)(rand()%100);
 	des_shoot = 100.0 - des_split;
-	split_min = rand()%100;
+	split_min = (rand()%50)+50;
 	shoot_min = rand()%50;
 	splitMsg = false;
+	followingMate = false;
 
+	cout << sex << " sex\n";
 	cout << des_split << " desire to split\n";
 	cout << des_shoot << " desire to shoot\n";
 	cout << split_min << " split min\n";
@@ -171,7 +174,7 @@ void CInvader::corrupt()
 	corruptImg();
 	corruptInterPoints();
 	tFraction += ((rand()%10)-5)/10000.0f;
-	//juice stays the same
+	//juice *= 2;
 	des_split = abs(des_split + ((rand()%10)-5));
 	des_shoot = abs(des_shoot + ((rand()%10)-5));
 	split_min = abs(split_min + ((rand()%10)-5));
@@ -181,10 +184,27 @@ void CInvader::corrupt()
 void CInvader::move()
 {
 	// qudratic intopolation
-	if(t < 0.0)
+	if(t <= 0.0)
+	{
 		t = 0.0;
-	if(t > 1.0)
+		if(followingMate)
+		{
+			p2 = posCloMate;
+			pc.x+=(posCloMate.x - pc.x)/2;
+			pc.y+=(posCloMate.y - pc.y)/2;
+		}
+		
+	}
+	if(t >= 1.0)
+	{
 		t = 1.0;
+		if(followingMate)
+		{
+			p1 = posCloMate;
+			pc.x+=(posCloMate.x - pc.x)/2;
+			pc.y+=(posCloMate.y - pc.y)/2;
+		}
+	}
 	pos.x = p1.x*pow((1-t),2) + 2*t*(1-t)*pc.x + p2.x*pow(t,2);
 	pos.y = p1.y*pow((1-t),2) + 2*t*(1-t)*pc.y + p2.y*pow(t,2);
 	if(forward)
@@ -207,6 +227,9 @@ void CInvader::move()
 			return;
 		}
 	}
+
+	//use up juice when move
+	juice -= tFraction/2;
 }
 void CInvader::action()
 {
@@ -217,8 +240,8 @@ void CInvader::action()
 		//split
 		if(juice >= split_min && splitMsg == false && juice >= 1.0)
 		{
-			juice /= 2;
-			splitMsg = true;
+			/*juice /= 2;
+			splitMsg = true;*/
 			//cout << juice << " after split\n";
 		}
 	}
@@ -258,4 +281,19 @@ int CInvader::getBlocks()
 			count++;
 	}
 	return count;
+}
+point2D CInvader::getIP(int p)
+{
+	switch(p)
+	{
+	case 0:
+		return p1;
+		break;
+	case 1:
+		return pc;
+		break;
+	case 2:
+		return p2;
+		break;
+	}
 }

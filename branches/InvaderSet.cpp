@@ -60,10 +60,30 @@ void CInvaderSet::actionInvaders()
 			iTemp.corrupt();
 			lInvaders.push_back(iTemp);
 			iter->aceptSplitMsg();
-			//cout << lInvaders.size() << "\n";
+			
 		}
-		iter->addJuice(0.001);//0.0001
+		iter->addJuice(0.1/lInvaders.size());//0.001
+		//cout << iter->getJuice() << " juice\n";
+		
+
 	}
+	while(!testNoJuice());
+
+	//cout << lInvaders.size() << "\n";
+}
+bool CInvaderSet::testNoJuice()
+{
+	list<CInvader>::iterator iter;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		if(iter->getJuice() < 0)
+		{
+			iter = lInvaders.erase(iter);
+			// !! put this back //return false;
+			
+		}
+	}
+	return true;
 }
 bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
 {
@@ -73,6 +93,19 @@ bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
 	{
 		if(i == invader)
 			return iter->getImgAtU(pt);
+		
+		i++;
+	}
+	return 0;
+}
+bool CInvaderSet::getInvaderSex(int invader)
+{
+	list<CInvader>::iterator iter;
+	int i = 0;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		if(i == invader)
+			return iter->getSex();
 		
 		i++;
 	}
@@ -113,4 +146,54 @@ bool CInvaderSet::testHits(point2D p)
 void CInvaderSet::clearInvaders()
 {
 	lInvaders.clear();
+}
+void CInvaderSet::corruptAll()
+{
+	// this function sucks
+	list<CInvader>::iterator iter;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		iter->corrupt();
+	}
+}
+void CInvaderSet::findClosestMates()
+{
+	point2D p, p2, out;
+	double td, dist = WIDTH*HEIGHT;
+	bool follow = false;
+	list<CInvader>::iterator iter;
+	list<CInvader>::iterator iter2;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		p = iter->getPos();
+		out = p;
+		for(iter2=lInvaders.begin(); iter2!=lInvaders.end(); iter2++)
+		{
+			p2 = iter2->getPos();
+			td = sqrt( pow(p.x - p2.x,2) + pow(p.y - p2.y,2) );
+			if( td < dist && iter->getSex() != iter2->getSex())
+			{
+				dist = td;
+				out = p2;
+				follow = true;
+				iter->setCloMate(out, follow);
+			}
+		}
+		follow = false;
+		dist = WIDTH*HEIGHT;
+		
+	}
+}
+point2D CInvaderSet::getInvaderLIP(int invader, int p)
+{
+	list<CInvader>::iterator iter;
+	int i = 0;
+	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
+	{
+		if(i == invader)
+		{
+			return iter->getIP(p);
+		}
+		i++;
+	}
 }

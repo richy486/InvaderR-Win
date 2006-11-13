@@ -40,10 +40,12 @@ using namespace std;
 #define RADIUS 12
 // Background color
 #define BGCOLOR 0x000000
-// Invader colour
-#define INVADERCOLOR 0x9f1f1f
+// Male Invader colour
+#define M_INVADERCOLOR 0x9f1f1f
+// Female Invader colour
+#define F_INVADERCOLOR 0x46753B
 // Bomb colour
-#define BOMBCOLOR 0xff0000
+#define BOMBCOLOR 0xffff00
 // Player color
 #define PLAYERCOLOR 0x1F3D9F
 // Shot colour
@@ -69,16 +71,25 @@ using namespace std;
 // Tile size (width and height)
 #define TILESIZE 1
 // size of a invader pixel
-#define IPS 3
+#define IPS 2
 // size of a win/loose pixel
 #define TPS 50
 
 // Splitting cost
 #define SPLITCOST 20
 // Shooting cost
-#define SHOOTCOST 1
+#define SHOOTCOST 15
 
 struct point2D{double x; double y;};
 struct point3D{double x; double y; double z;};
 
+enum{
+	NOT,
+	AM,
+	DID
+};
+enum{
+	MALE,
+	FEMALE
+};
 #endif
