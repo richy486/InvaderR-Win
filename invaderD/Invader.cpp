@@ -159,13 +159,14 @@ void CInvader::generateBasic()
 	splitMsg = false;
 	followingMate = false;
 
+	/*
 	cout << sex << " sex\n";
 	cout << des_split << " desire to split\n";
 	cout << des_shoot << " desire to shoot\n";
 	cout << split_min << " split min\n";
 	cout << shoot_min << " shoot min\n";
 	cout << "----------------------------------\n";
-	
+	*/
 	pos = p1;
 }
 void CInvader::corrupt()
@@ -175,10 +176,10 @@ void CInvader::corrupt()
 	corruptInterPoints();
 	tFraction += ((rand()%10)-5)/10000.0f;
 	//juice *= 2;
-	des_split = abs(des_split + ((rand()%10)-5));
-	des_shoot = abs(des_shoot + ((rand()%10)-5));
-	split_min = abs(split_min + ((rand()%10)-5));
-	shoot_min = abs(shoot_min + ((rand()%10)-5));
+	des_split = fabs((double)(des_split + ((rand()%10)-5)));
+	des_shoot = fabs((double)(des_shoot + ((rand()%10)-5)));
+	split_min = fabs((double)(split_min + ((rand()%10)-5)));
+	shoot_min = fabs((double)(shoot_min + ((rand()%10)-5)));
 	splitMsg = false;
 }
 void CInvader::move()

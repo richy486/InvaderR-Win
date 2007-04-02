@@ -26,7 +26,7 @@
 class CShooter
 {
 protected:
-	list<point2D> shots;
+	std::list<point2D> shots;
 public:
 	CShooter(void);
 	~CShooter(void);

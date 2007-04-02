@@ -27,7 +27,7 @@
 class CInvaderSet
 {
 protected:
-	list<CInvader> lInvaders;
+	std::list<CInvader> lInvaders;
 public:
 	CInvaderSet(void);
 	~CInvaderSet(void);
