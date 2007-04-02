@@ -235,11 +235,17 @@ void exe()
 	{
 		if(!CEnd::getInstance()->getEnd())
 		{
-			if (gKeyLeft) CPlayer::getInstance()->subMove(THRUST);
-			if (gKeyRight) CPlayer::getInstance()->addMove(THRUST);
-			if (gKeyCtrl || SDL_JoystickGetButton(gJoystick, 2)) CPlayer::getInstance()->shoot();
+			if (gKeyLeft) 
+				CPlayer::getInstance()->subMove(THRUST);
+			if (gKeyRight) 
+				CPlayer::getInstance()->addMove(THRUST);
+			if (gKeyCtrl || SDL_JoystickGetButton(gJoystick, 2)) 
+				CPlayer::getInstance()->shoot();
 		}
-		if (!gKeyCtrl && !SDL_JoystickGetButton(gJoystick, 0)) CPlayer::getInstance()->readyShoot();
+
+		if (!gKeyCtrl && !SDL_JoystickGetButton(gJoystick, 2)) 
+			CPlayer::getInstance()->readyShoot();
+
 		if (gKeyEnter || SDL_JoystickGetButton(gJoystick, 0))
 		{
 			for (int i = 0; i < HEIGHT; i++)
@@ -481,60 +487,53 @@ int main(int argc, char *argv[])
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) 
 		{
-		switch (event.type) 
-		{
-			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym)
+			if(event.type == SDL_KEYDOWN)
+			{
+				if(event.key.keysym.sym == SDLK_LEFT)
 				{
-				case SDLK_UP:
-					for(int i = 0; i < CInvaderSet::getInstance()->getNumInvaders(); i++)
-					{
-						cout << CInvaderSet::getInstance()->getInvaderPos(i).x
-							<< " " << CInvaderSet::getInstance()->getInvaderPos(i).y
-							<< "\n";
-					}
-					cout << "===========================\n";
-					break;
-				case SDLK_LEFT:
 					gKeyLeft = 1;
-					break;
-				case SDLK_RIGHT:
-					gKeyRight = 1;
-					break;
-				case SDLK_LCTRL:
-					gKeyCtrl = 1;
-					break;
-				case SDLK_RETURN:
-					gKeyEnter = 1;
-					break;
 				}
-				break;
-		
-			case SDL_KEYUP:          
-				switch (event.key.keysym.sym)
+				else if(event.key.keysym.sym == SDLK_RIGHT)
 				{
-				case SDLK_ESCAPE:
-					// If escape is pressed, return (and thus, quit)
-					return 0;
-				case SDLK_LEFT:
-					gKeyLeft = 0;
-					break;
-				case SDLK_RIGHT:
-					gKeyRight = 0;
-					break;
-				case SDLK_LCTRL:
-					gKeyCtrl = 0;
-					break;
-				case SDLK_RETURN:
-					gKeyEnter = 0;
-					break;
+					gKeyRight = 1;
 				}
-				break;
-
-			case SDL_QUIT:
+				else if(event.key.keysym.sym == SDLK_LCTRL)
+				{
+					gKeyCtrl = 1;
+				}
+				else if(event.key.keysym.sym == SDLK_RETURN)
+				{
+					gKeyEnter = 1;
+				}
+			}
+			else if(event.type == SDL_KEYUP)
+			{
+				if(event.key.keysym.sym == SDLK_ESCAPE)
+				{
+					return 0;
+				}
+				else if(event.key.keysym.sym == SDLK_LEFT)
+				{
+					gKeyLeft = 0;
+				}
+				else if(event.key.keysym.sym == SDLK_RIGHT)
+				{
+					gKeyRight = 0;
+				}
+				else if(event.key.keysym.sym == SDLK_LCTRL)
+				{
+					gKeyCtrl = 0;
+				}
+				else if(event.key.keysym.sym == SDLK_RETURN)
+				{
+					gKeyEnter = 0;
+				}
+			}
+			else if(event.type == SDL_QUIT)
+			{
 				return(0);
 			}
-		}
-  }
-  return 0;
+		}// end while poll event
+	}// end while 1
+	return 0;
 }

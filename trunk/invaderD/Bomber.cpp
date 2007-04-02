@@ -32,7 +32,7 @@ CBomber* CBomber::getInstance()
 }
 point2D CBomber::getBombPos(int bomb)
 {
-	list<point2D>::iterator iter;
+	std::list<point2D>::iterator iter;
 	point2D tp;
 	int i = 0;
 	for(iter=bombs.begin(); iter!=bombs.end(); iter++)
@@ -45,8 +45,9 @@ point2D CBomber::getBombPos(int bomb)
 		}
 		i++;
 	}
-	tp.x = 0.0;
-	tp.y = 0.0;
+	
+	tp.x = 0.0f;
+	tp.y = 0.0f;
 	return tp;
 }
 void CBomber::drop(point2D p)
@@ -59,7 +60,7 @@ void CBomber::drop(point2D p)
 void CBomber::progress()
 {
 	point2D tp;
-	list<point2D>::iterator iter;
+	std::list<point2D>::iterator iter;
 	
 	for(int i = 0; i < 1; i++)
 	{

@@ -27,7 +27,7 @@
 class CBomber
 {
 protected:
-	list<point2D> bombs;
+	std::list<point2D> bombs;
 public:
 	CBomber(void);
 	~CBomber(void);

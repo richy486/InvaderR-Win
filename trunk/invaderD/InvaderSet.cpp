@@ -42,7 +42,7 @@ void CInvaderSet::createBasicInvaders(int amount)
 }
 void CInvaderSet::moveInvaders()
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		iter->move();
@@ -50,7 +50,7 @@ void CInvaderSet::moveInvaders()
 }
 void CInvaderSet::actionInvaders()
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		iter->action();
@@ -73,7 +73,7 @@ void CInvaderSet::actionInvaders()
 }
 bool CInvaderSet::testNoJuice()
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		if(iter->getJuice() < 0)
@@ -87,7 +87,7 @@ bool CInvaderSet::testNoJuice()
 }
 bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	int i = 0;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
@@ -100,7 +100,7 @@ bool CInvaderSet::getInvaderImgAtWM(int invader, int pt)
 }
 bool CInvaderSet::getInvaderSex(int invader)
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	int i = 0;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
@@ -113,7 +113,7 @@ bool CInvaderSet::getInvaderSex(int invader)
 }
 point2D CInvaderSet::getInvaderPos(int invader)
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	int i = 0;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
@@ -131,7 +131,7 @@ point2D CInvaderSet::getInvaderPos(int invader)
 }
 bool CInvaderSet::testHits(point2D p)
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		if(iter->testHit(p))
@@ -150,7 +150,7 @@ void CInvaderSet::clearInvaders()
 void CInvaderSet::corruptAll()
 {
 	// this function sucks
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		iter->corrupt();
@@ -161,8 +161,8 @@ void CInvaderSet::findClosestMates()
 	point2D p, p2, out;
 	double td, dist = WIDTH*HEIGHT;
 	bool follow = false;
-	list<CInvader>::iterator iter;
-	list<CInvader>::iterator iter2;
+	std::list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter2;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{
 		p = iter->getPos();
@@ -186,7 +186,7 @@ void CInvaderSet::findClosestMates()
 }
 point2D CInvaderSet::getInvaderLIP(int invader, int p)
 {
-	list<CInvader>::iterator iter;
+	std::list<CInvader>::iterator iter;
 	int i = 0;
 	for(iter=lInvaders.begin(); iter!=lInvaders.end(); iter++)
 	{

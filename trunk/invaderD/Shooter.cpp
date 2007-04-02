@@ -32,7 +32,7 @@ CShooter* CShooter::getInstance()
 }
 point2D CShooter::getShotPos(int shot)
 {
-	list<point2D>::iterator iter;
+	std::list<point2D>::iterator iter;
 	point2D tp;
 	int i = 0;
 	for(iter=shots.begin(); iter!=shots.end(); iter++)
@@ -59,7 +59,7 @@ void CShooter::shoot(point2D p)
 void CShooter::progress()
 {
 	point2D tp;
-	list<point2D>::iterator iter;
+	std::list<point2D>::iterator iter;
 	
 	for(int i = 0; i < 5; i++)
 	{
@@ -99,7 +99,7 @@ void CShooter::progress()
 }
 void CShooter::destroyShot(int s)
 {
-	list<point2D>::iterator iter;
+	std::list<point2D>::iterator iter;
 	int i = 0;
 	for(iter=shots.begin(); iter!=shots.end(); iter++)
 	{
