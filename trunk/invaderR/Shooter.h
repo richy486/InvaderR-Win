@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <GL/glut.h>
+//#include <GL/glut.h>
 #include <list>
 using namespace std;
 #include ".\invaderset.h"

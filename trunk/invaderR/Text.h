@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <GL/glut.h>
+//#include <GL/glut.h>
 #include "consts.h"
 
 class CText

@@ -44,7 +44,7 @@ public:
 	void setOutcome(bool val){outcome = val;}
 	bool getOutcome(){return outcome;}
 
-	int getNumInvaders(){return I_set.size();}
+	int getNumInvaders(){return (int)I_set.size();}
 	void spawnNewSet();
 	bool testHits(Point p);
 	void move();

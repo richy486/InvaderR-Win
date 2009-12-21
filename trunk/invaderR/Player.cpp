@@ -69,31 +69,31 @@ void CPlayer::draw()
 		{
 			
 			glBegin(GL_POLYGON);
-				glVertex2i(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS));
-				glVertex2i(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS));
-				glVertex2i(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS)+IPS);
-				glVertex2i(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS)+IPS);
-				glVertex2i(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS));
+				glVertex3f(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS), 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
 			glEnd();
 
 			if(i < 5)
 			{
 				glBegin(GL_POLYGON);
-					glVertex2i(p_pos.x+((i/5)*IPS)+(4*IPS),		(p_pos.y)+((i%5)*IPS));
-					glVertex2i(p_pos.x+((i/5)*IPS)+IPS+(4*IPS),	(p_pos.y)+((i%5)*IPS));
-					glVertex2i(p_pos.x+((i/5)*IPS)+IPS+(4*IPS),	(p_pos.y)+((i%5)*IPS)+IPS);
-					glVertex2i(p_pos.x+((i/5)*IPS)+(4*IPS),		(p_pos.y)+((i%5)*IPS)+IPS);
-					glVertex2i(p_pos.x+((i/5)*IPS)+(4*IPS),		(p_pos.y)+((i%5)*IPS));
+					glVertex3f(p_pos.x+((i/5)*IPS)+(4*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+IPS+(4*IPS),	(p_pos.y)+((i%5)*IPS), 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+IPS+(4*IPS),	(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+(4*IPS),		(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+(4*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
 				glEnd();
 			}
 			if(i >= 5 && i < 10)
 			{
 				glBegin(GL_POLYGON);
-					glVertex2i(p_pos.x+((i/5)*IPS)+(2*IPS),		(p_pos.y)+((i%5)*IPS));
-					glVertex2i(p_pos.x+((i/5)*IPS)+IPS+(2*IPS),	(p_pos.y)+((i%5)*IPS));
-					glVertex2i(p_pos.x+((i/5)*IPS)+IPS+(2*IPS),	(p_pos.y)+((i%5)*IPS)+IPS);
-					glVertex2i(p_pos.x+((i/5)*IPS)+(2*IPS),		(p_pos.y)+((i%5)*IPS)+IPS);
-					glVertex2i(p_pos.x+((i/5)*IPS)+(2*IPS),		(p_pos.y)+((i%5)*IPS));
+					glVertex3f(p_pos.x+((i/5)*IPS)+(2*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+IPS+(2*IPS),	(p_pos.y)+((i%5)*IPS), 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+IPS+(2*IPS),	(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+(2*IPS),		(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+					glVertex3f(p_pos.x+((i/5)*IPS)+(2*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
 				glEnd();
 			}
 		}

@@ -42,17 +42,17 @@ bool CBase::testHit(Point p)
 // Draw the base.
 void CBase::drawBase()
 {
-	glColor3f(0.9, 0.9, 0.9);
+	glColor3f(0.9f, 0.9f, 0.9f);
 	for(int i = 0; i < 25; i++)
 	{
 		if(img[i] == true)
 		{
 			glBegin(GL_POLYGON);
-				glVertex2i(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS));
-				glVertex2i(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS));
-				glVertex2i(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS)+IPS);
-				glVertex2i(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS)+IPS);
-				glVertex2i(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS));
+				glVertex3f(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS), 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS)+IPS,	(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS)+IPS, 0.0f);
+				glVertex3f(p_pos.x+((i/5)*IPS),		(p_pos.y)+((i%5)*IPS), 0.0f);
 			glEnd();
 		}
 	}
