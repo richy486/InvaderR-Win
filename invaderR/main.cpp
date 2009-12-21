@@ -15,8 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-#include <GL/glut.h>
+#if defined USE_GLUT
+//#include <GL/glut.h>
 #include <time.h>
 #include <stdlib.h>
 #include ".\consts.h"
@@ -26,6 +26,7 @@
 #include ".\text.h"
 #include ".\bomber.h"
 #include ".\baseset.h"
+#include "ApplicationData.h"
 
 int KeyDown[256];
 int SpecDown[256];
@@ -40,7 +41,7 @@ void init(void)
 	glLoadIdentity();
 	gluOrtho2D(0.0, 480.0, 0.0, 320.0);
 	
-	srand( time(NULL));
+	srand((unsigned int)time(NULL));
 	
 	
 	CBaseSet::getInstance()->makeBases();
@@ -52,6 +53,7 @@ void init(void)
 }
 void checkKeyboard(void)
 {
+#if defined USE_GLUT
 	if ( SpecDown[GLUT_KEY_LEFT] && CInvaderSet::getInstance()->getPlaying())
 	{
 		Point t_p = CPlayer::getInstance()->getPos();
@@ -66,6 +68,7 @@ void checkKeyboard(void)
 		if(t_p.x < 450)
 			CPlayer::getInstance()->setPos(t_p);
 	}
+#endif
 }
 static void timerCallback (int value) 
 { 
@@ -87,10 +90,12 @@ static void timerCallback (int value)
 	}
 	
 	
+#if defined USE_GLUT
 	/* maybe glutPostRedisplay(), if necessary */ 
 	glutPostRedisplay();
 	/* call back again after elapsedUSecs have passed */ 
 	glutTimerFunc (FRAMERATE, timerCallback, 0); 
+#endif
 }
 
 void OnDraw(void)
@@ -113,7 +118,9 @@ void OnDraw(void)
 		CText::getInstance()->draw();
 	}
 	glFlush();
+#if defined USE_GLUT
 	glutSwapBuffers();
+#endif
 }
 void OnIdle(void)
 {
@@ -157,15 +164,20 @@ void specUpFunc(int key, int x, int y)
 {
 	SpecDown[key] = 0;
 }
+
+
 void main(int argc, char** argv)
 {
+#if defined USE_GLUT
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowPosition(300, 300);
 	glutInitWindowSize(480, 320);
 	glutCreateWindow("invaderR");
+#endif
 
 	init();
+#if defined USE_GLUT
 	glutKeyboardFunc(keyboard);
 	glutKeyboardUpFunc( keyboardUp );
 	glutSpecialFunc(specFunc);
@@ -174,4 +186,6 @@ void main(int argc, char** argv)
 	glutIdleFunc(OnIdle);
 	glutTimerFunc(FRAMERATE, timerCallback, 0);
 	glutMainLoop();
+#endif
 }
+#endif

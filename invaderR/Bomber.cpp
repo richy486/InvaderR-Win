@@ -34,7 +34,7 @@ CBomber* CBomber::getInstance()
 void CBomber::shoot(Point p)
 {
 	Point t_p;
-	t_p.x = p.x +(2.5*IPS);
+	t_p.x = p.x +(2.5f*IPS);
 	t_p.y = p.y;
 	shots.push_back(t_p);
 }
@@ -44,23 +44,23 @@ void CBomber::progress()
 	Point t_p;
 	list<Point>::iterator iter;
 
-	
-	for(int i = 0; i < 5; i++)
+#if 1 //RA - testing
+	//for(int i = 0; i < 5; i++) // ???????
 	{
-		iter=shots.begin(); 
-		while(iter!=shots.end())
+		iter = shots.begin(); 
+		while(iter != shots.end())
 		{
 			
 			t_p.x = iter->x;
 			t_p.y = iter->y;
-			if(iter->y <=50+(5*IPS))
+			if(iter->y <= 50 + (5 * IPS))
 			{
 				if(iter->y <= 0 || CBaseSet::getInstance()->checkHits(t_p))
 				{
 					iter = shots.erase(iter);
 				}
 			}
-			if(iter->y <=50+(5*IPS) && CPlayer::getInstance()->testHit(t_p))
+			if(iter->y <= 50 + (5 * IPS) && CPlayer::getInstance()->testHit(t_p))
 			{
 				iter = shots.erase(iter);
 				CInvaderSet::getInstance()->setPlaying(false);
@@ -68,12 +68,13 @@ void CBomber::progress()
 			}
 			else
 			{
-				iter->y -=1;
+				iter->y -= 1;
 				iter++; 
 			}
 			
 		}
 	}
+#endif
 }
 // Kill all the bombs.
 void CBomber::killAll()
@@ -89,11 +90,11 @@ void CBomber::draw()
 	{
 		
 			glBegin(GL_POLYGON);
-				glVertex2i(iter->x,		(iter->y));
-				glVertex2i(iter->x+IPS,	(iter->y));
-				glVertex2i(iter->x+IPS,	(iter->y)+IPS);
-				glVertex2i(iter->x,		(iter->y)+IPS);
-				glVertex2i(iter->x,		(iter->y));
+				glVertex3f(iter->x,		(iter->y), 0.0f);
+				glVertex3f(iter->x+IPS,	(iter->y), 0.0f);
+				glVertex3f(iter->x+IPS,	(iter->y)+IPS, 0.0f);
+				glVertex3f(iter->x,		(iter->y)+IPS, 0.0f);
+				glVertex3f(iter->x,		(iter->y), 0.0f);
 			glEnd();
 	}
 }

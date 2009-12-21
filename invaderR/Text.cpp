@@ -75,31 +75,31 @@ void CText::draw()
 		{
 			
 			glBegin(GL_POLYGON);
-				glVertex2i(x+((i/5)*TPS),		(y)+((i%5)*TPS));
-				glVertex2i(x+((i/5)*TPS)+TPS,	(y)+((i%5)*TPS));
-				glVertex2i(x+((i/5)*TPS)+TPS,	(y)+((i%5)*TPS)+TPS);
-				glVertex2i(x+((i/5)*TPS),		(y)+((i%5)*TPS)+TPS);
-				glVertex2i(x+((i/5)*TPS),		(y)+((i%5)*TPS));
+				glVertex3f(x+((i/5)*TPS),		(y)+((i%5)*TPS), 0.0f);
+				glVertex3f(x+((i/5)*TPS)+TPS,	(y)+((i%5)*TPS), 0.0f);
+				glVertex3f(x+((i/5)*TPS)+TPS,	(y)+((i%5)*TPS)+TPS, 0.0f);
+				glVertex3f(x+((i/5)*TPS),		(y)+((i%5)*TPS)+TPS, 0.0f);
+				glVertex3f(x+((i/5)*TPS),		(y)+((i%5)*TPS), 0.0f);
 			glEnd();
 
 			if(i < 5)
 			{
 				glBegin(GL_POLYGON);
-					glVertex2i(x+((i/5)*TPS)+(4*TPS),		(y)+((i%5)*TPS));
-					glVertex2i(x+((i/5)*TPS)+TPS+(4*TPS),	(y)+((i%5)*TPS));
-					glVertex2i(x+((i/5)*TPS)+TPS+(4*TPS),	(y)+((i%5)*TPS)+TPS);
-					glVertex2i(x+((i/5)*TPS)+(4*TPS),		(y)+((i%5)*TPS)+TPS);
-					glVertex2i(x+((i/5)*TPS)+(4*TPS),		(y)+((i%5)*TPS));
+					glVertex3f(x+((i/5)*TPS)+(4*TPS),		(y)+((i%5)*TPS), 0.0f);
+					glVertex3f(x+((i/5)*TPS)+TPS+(4*TPS),	(y)+((i%5)*TPS), 0.0f);
+					glVertex3f(x+((i/5)*TPS)+TPS+(4*TPS),	(y)+((i%5)*TPS)+TPS, 0.0f);
+					glVertex3f(x+((i/5)*TPS)+(4*TPS),		(y)+((i%5)*TPS)+TPS, 0.0f);
+					glVertex3f(x+((i/5)*TPS)+(4*TPS),		(y)+((i%5)*TPS), 0.0f);
 				glEnd();
 			}
 			if(i >= 5 && i < 10)
 			{
 				glBegin(GL_POLYGON);
-					glVertex2i(x+((i/5)*TPS)+(2*TPS),		(y)+((i%5)*TPS));
-					glVertex2i(x+((i/5)*TPS)+TPS+(2*TPS),	(y)+((i%5)*TPS));
-					glVertex2i(x+((i/5)*TPS)+TPS+(2*TPS),	(y)+((i%5)*TPS)+TPS);
-					glVertex2i(x+((i/5)*TPS)+(2*TPS),		(y)+((i%5)*TPS)+TPS);
-					glVertex2i(x+((i/5)*TPS)+(2*TPS),		(y)+((i%5)*TPS));
+					glVertex3f(x+((i/5)*TPS)+(2*TPS),		(y)+((i%5)*TPS), 0.0f);
+					glVertex3f(x+((i/5)*TPS)+TPS+(2*TPS),	(y)+((i%5)*TPS), 0.0f);
+					glVertex3f(x+((i/5)*TPS)+TPS+(2*TPS),	(y)+((i%5)*TPS)+TPS, 0.0f);
+					glVertex3f(x+((i/5)*TPS)+(2*TPS),		(y)+((i%5)*TPS)+TPS, 0.0f);
+					glVertex3f(x+((i/5)*TPS)+(2*TPS),		(y)+((i%5)*TPS), 0.0f);
 				glEnd();
 			}//*/
 		}

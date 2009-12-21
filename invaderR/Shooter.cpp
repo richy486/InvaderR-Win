@@ -29,13 +29,14 @@ CShooter::~CShooter(void)
 void CShooter::shoot(Point p)
 {
 	Point t_p;
-	t_p.x = p.x +(2.5*IPS);
-	t_p.y = p.y +(5*IPS);
+	t_p.x = p.x +(2.5f * IPS);
+	t_p.y = p.y +(5.0f * IPS);
 	shots.push_back(t_p);
 }
 // Move the shot up the screen until it has left at the top or has hit an invader.
 void CShooter::progress()
 {
+#if 1 // RA - testing
 	list<Point>::iterator iter;
 
 	for(int i = 0; i < 5; i++)
@@ -59,6 +60,7 @@ void CShooter::progress()
 		}
 		
 	}
+#endif
 }
 // Kill all the shots.
 void CShooter::killAll()
@@ -72,13 +74,12 @@ void CShooter::draw()
 	list<Point>::iterator iter;
 	for(iter=shots.begin(); iter!=shots.end(); ++iter)
 	{
-		
-			glBegin(GL_POLYGON);
-				glVertex2i(iter->x,		(iter->y));
-				glVertex2i(iter->x+IPS,	(iter->y));
-				glVertex2i(iter->x+IPS,	(iter->y)+IPS);
-				glVertex2i(iter->x,		(iter->y)+IPS);
-				glVertex2i(iter->x,		(iter->y));
-			glEnd();
+		glBegin(GL_POLYGON);
+			glVertex3f(iter->x,		(iter->y), 0.0f);
+			glVertex3f(iter->x+IPS,	(iter->y), 0.0f);
+			glVertex3f(iter->x+IPS,	(iter->y)+IPS, 0.0f);
+			glVertex3f(iter->x,		(iter->y)+IPS, 0.0f);
+			glVertex3f(iter->x,		(iter->y), 0.0f);
+		glEnd();
 	}
 }

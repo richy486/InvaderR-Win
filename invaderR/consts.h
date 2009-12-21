@@ -23,6 +23,14 @@
 using std::string;
 using std::cout;
 
+#if defined USE_GLUT
+	#include <GL/glut.h>
+#else
+	#include <windows.h>
+	#include <gl\gl.h>
+	#include <gl\glu.h>
+#endif
+
 // size of a invader pixel
 #define IPS 3
 // size of a win/loose pixel
@@ -30,4 +38,12 @@ using std::cout;
 // time between glutTimerFunc calls
 #define FRAMERATE 15
 //position on the screen
-typedef struct Point{double x;double y;};
+struct Point
+{
+	float x;
+	float y;
+};
+
+
+
+
