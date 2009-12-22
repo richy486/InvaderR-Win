@@ -42,8 +42,8 @@ void CInvaderSet::spawnNewSet()
 			CInvader t_inv;
 			t_inv.generateInvader();
 			Point t_pnt;
-			t_pnt.x = j*30+160;
-			t_pnt.y = i*30+180;
+			t_pnt.x = j * 30.0f + 160.0f;
+			t_pnt.y = i * 30.0f + 180.0f;
 			t_inv.setPos(t_pnt);
 			I_set.push_back(t_inv);
 		}
@@ -74,7 +74,7 @@ bool CInvaderSet::testHits(Point p)
 // Move the invaders adding slop,
 // Also has the invaders shoot
 // The less invaders the larger the change they will shoot.
-void CInvaderSet::move()
+void CInvaderSet::move(float seconds)
 {
 	if(I_set.empty())
 	{
@@ -83,9 +83,9 @@ void CInvaderSet::move()
 	}
 	Point t_p;
 	list<CInvader>::iterator iter;
-	double x,y;
+	float x; // ,y;
 	
-	if(side == true)
+	if (side == true)
 	{
 		side2side++;
 		x = -1;
@@ -108,13 +108,14 @@ void CInvaderSet::move()
 
 	for(iter=I_set.begin(); iter!=I_set.end(); ++iter)
 	{
-		t_p.x = iter->getPos().x + x*((double)((rand()%5)+15)/10);
+		t_p.x = iter->getPos().x + x*((float)((rand()%5)+15)/10);
 		if(t_p.x > 460)
-			t_p.x -= ((double)((rand()%10)+10)/10);
+			t_p.x -= ((float)((rand()%10)+10)/10) * seconds * 100.0f;
 		if(t_p.x < 20)
-			t_p.x += ((double)((rand()%10)+10)/10);
-		t_p.y = iter->getPos().y -(double)(rand()%20)/100;
+			t_p.x += ((float)((rand()%10)+10)/10) * seconds * 100.0f;
+		t_p.y = iter->getPos().y - (((float)(rand()%20)/100) * seconds * 25.0f);
 		iter->setPos(t_p);
+		
 		if(iter->getPos().y <= 0)
 		{
 			playing = false;

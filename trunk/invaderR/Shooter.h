@@ -34,7 +34,7 @@ public:
 	~CShooter(void);
 
 	void shoot(Point p);
-	void progress();
+	void progress(float seconds);
 	void killAll();
 	void draw();
 };

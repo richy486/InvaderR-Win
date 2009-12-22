@@ -47,7 +47,7 @@ public:
 	int getNumInvaders(){return (int)I_set.size();}
 	void spawnNewSet();
 	bool testHits(Point p);
-	void move();
+	void move(float seconds);
 	void restart();
 	void killAll();
 
