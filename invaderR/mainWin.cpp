@@ -139,20 +139,20 @@ void init(void)
 }
 
 bool g_PressedShoot = false;
-void checkKeyboard(void)
+void checkKeyboard(float seconds)
 {
 	
 	if (keys[VK_LEFT] && CInvaderSet::getInstance()->getPlaying())
 	{
 		Point t_p = CPlayer::getInstance()->getPos();
-		t_p.x -= 3.5;
+		t_p.x -= 3.5f * seconds * 100.0f;
 		if(t_p.x > 20)
 			CPlayer::getInstance()->setPos(t_p);
 	}
 	if (keys[VK_RIGHT] && CInvaderSet::getInstance()->getPlaying())
 	{
 		Point t_p = CPlayer::getInstance()->getPos();
-		t_p.x += 3.5;
+		t_p.x += 3.5f * seconds * 100.0f;
 		if(t_p.x < 450)
 			CPlayer::getInstance()->setPos(t_p);
 	}
@@ -163,7 +163,7 @@ void checkKeyboard(void)
 		g_PressedShoot = true;
 
 		Point t_p = CPlayer::getInstance()->getPos();
-		t_p.x-=1.5;
+		t_p.x -= 1.5;
 		shooter.shoot(t_p);
 	}
 	else if (!keys[VK_SPACE] && g_PressedShoot)
@@ -174,13 +174,13 @@ void checkKeyboard(void)
 
 void MainLoop(float seconds)
 {
-	checkKeyboard();    
-	if(CInvaderSet::getInstance()->getPlaying())
+	checkKeyboard(seconds);    
+	if (CInvaderSet::getInstance()->getPlaying())
 	{
 		CText::getInstance()->displayNothing();
-		shooter.progress();
-		CBomber::getInstance()->progress();
-		CInvaderSet::getInstance()->move();
+		shooter.progress(seconds);
+		CBomber::getInstance()->progress(seconds);
+		CInvaderSet::getInstance()->move(seconds);
 	}
 	else
 	{
@@ -465,6 +465,30 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 	return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }
 
+LARGE_INTEGER m_LastTime;
+LARGE_INTEGER m_Frequency;
+
+void InitTimeDelta()
+{
+	QueryPerformanceCounter(&m_LastTime);
+	QueryPerformanceFrequency(&m_Frequency);
+}
+
+float GetTimeDelta()
+{
+	LARGE_INTEGER lpPerformanceCount;
+	QueryPerformanceCounter(&lpPerformanceCount);
+
+	// Now by subtracting this current time by the previous time
+	// we get the time it has taken from the previous frame to the current
+	float delayInTicks = 0;
+	delayInTicks = float(lpPerformanceCount.QuadPart - m_LastTime.QuadPart);
+	m_LastTime = lpPerformanceCount;
+
+	// Now we just convert that delay to seconds
+	return (delayInTicks / m_Frequency.QuadPart);
+}
+
 int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 					HINSTANCE	hPrevInstance,		// Previous Instance
 					LPSTR		lpCmdLine,			// Command Line Parameters
@@ -485,6 +509,7 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 		return 0;									// Quit If Window Was Not Created
 	}
 
+	InitTimeDelta();
 	init();
 
 	while(!done)									// Loop That Runs While done=FALSE
@@ -512,7 +537,7 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 				}
 				else								// Not Time To Quit, Update Screen
 				{
-					MainLoop(1.0f);
+					MainLoop(GetTimeDelta());
 					DrawGLScene();					// Draw The Scene
 					SwapBuffers(hDC);				// Swap Buffers (Double Buffering)
 				}

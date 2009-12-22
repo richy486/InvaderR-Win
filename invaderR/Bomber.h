@@ -25,17 +25,23 @@ using namespace std;
 #include ".\player.h"
 #include ".\baseset.h"
 
+struct Shot
+{
+	Point m_position;
+	bool m_isDead;
+};
+
 class CBomber
 {
 protected:
-	list<Point> shots;
+	list<Shot> m_shots;
 public:
 	CBomber(void);
 	~CBomber(void);
 	static CBomber* getInstance();
 
 	void shoot(Point p);
-	void progress();
+	void progress(float seconds);
 	void killAll();
 	void draw();
 };

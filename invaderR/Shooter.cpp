@@ -34,7 +34,7 @@ void CShooter::shoot(Point p)
 	shots.push_back(t_p);
 }
 // Move the shot up the screen until it has left at the top or has hit an invader.
-void CShooter::progress()
+void CShooter::progress(float seconds)
 {
 #if 1 // RA - testing
 	list<Point>::iterator iter;
@@ -54,7 +54,7 @@ void CShooter::progress()
 			}
 			else
 			{
-				iter->y +=1;
+				iter->y += 100.0f * seconds;
 				iter++; 
 			}
 		}

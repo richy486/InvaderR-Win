@@ -33,45 +33,62 @@ CBomber* CBomber::getInstance()
 // Shoot a bomb.
 void CBomber::shoot(Point p)
 {
-	Point t_p;
-	t_p.x = p.x +(2.5f*IPS);
-	t_p.y = p.y;
-	shots.push_back(t_p);
+	Shot shot;
+	shot.m_isDead = false;
+
+	shot.m_position.x = p.x +(2.5f*IPS);
+	shot.m_position.y = p.y;
+	m_shots.push_back(shot);
 }
 // Move a bomb down the screen, if it is in range check if a bomb will hit a base or the player.
-void CBomber::progress()
+void CBomber::progress(float seconds)
 {
 	Point t_p;
-	list<Point>::iterator iter;
+	list<Shot>::iterator iter;
 
 #if 1 //RA - testing
 	//for(int i = 0; i < 5; i++) // ???????
 	{
-		iter = shots.begin(); 
-		while(iter != shots.end())
+		iter = m_shots.begin(); 
+		while(iter != m_shots.end())
 		{
-			
-			t_p.x = iter->x;
-			t_p.y = iter->y;
-			if(iter->y <= 50 + (5 * IPS))
+			t_p.x = iter->m_position.x;
+			t_p.y = iter->m_position.y;
+			if(iter->m_position.y <= 50 + (5 * IPS))
 			{
-				if(iter->y <= 0 || CBaseSet::getInstance()->checkHits(t_p))
+				if(iter->m_position.y <= 0 || CBaseSet::getInstance()->checkHits(t_p))
 				{
-					iter = shots.erase(iter);
+					//iter = m_shots.erase(iter);
+					iter->m_isDead = true;
 				}
 			}
-			if(iter->y <= 50 + (5 * IPS) && CPlayer::getInstance()->testHit(t_p))
+
+			if(iter->m_position.y <= 50 + (5 * IPS) && CPlayer::getInstance()->testHit(t_p))
 			{
-				iter = shots.erase(iter);
+				//iter = m_shots.erase(iter);
+				iter->m_isDead = true;
 				CInvaderSet::getInstance()->setPlaying(false);
 				CInvaderSet::getInstance()->setOutcome(false);
 			}
 			else
 			{
-				iter->y -= 1;
-				iter++; 
+				iter->m_position.y -= 100.0f * seconds;
+				//iter++; 
 			}
-			
+			iter++;
+		}
+	}
+
+	iter = m_shots.begin(); 
+	while(iter != m_shots.end())
+	{
+		if (iter->m_isDead)
+		{
+			iter = m_shots.erase(iter);
+		}
+		else
+		{
+			iter++;
 		}
 	}
 #endif
@@ -79,22 +96,21 @@ void CBomber::progress()
 // Kill all the bombs.
 void CBomber::killAll()
 {
-	shots.clear();
+	m_shots.clear();
 }
 // Draw the bombs.
 void CBomber::draw()
 {
 	glColor3f(1.0, 0.0, 0.0);
-	list<Point>::iterator iter;
-	for(iter=shots.begin(); iter!=shots.end(); ++iter)
+	list<Shot>::iterator iter;
+	for(iter = m_shots.begin(); iter != m_shots.end(); ++iter)
 	{
-		
-			glBegin(GL_POLYGON);
-				glVertex3f(iter->x,		(iter->y), 0.0f);
-				glVertex3f(iter->x+IPS,	(iter->y), 0.0f);
-				glVertex3f(iter->x+IPS,	(iter->y)+IPS, 0.0f);
-				glVertex3f(iter->x,		(iter->y)+IPS, 0.0f);
-				glVertex3f(iter->x,		(iter->y), 0.0f);
-			glEnd();
+		glBegin(GL_POLYGON);
+			glVertex3f(iter->m_position.x,		(iter->m_position.y), 0.0f);
+			glVertex3f(iter->m_position.x+IPS,	(iter->m_position.y), 0.0f);
+			glVertex3f(iter->m_position.x+IPS,	(iter->m_position.y)+IPS, 0.0f);
+			glVertex3f(iter->m_position.x,		(iter->m_position.y)+IPS, 0.0f);
+			glVertex3f(iter->m_position.x,		(iter->m_position.y), 0.0f);
+		glEnd();
 	}
 }
